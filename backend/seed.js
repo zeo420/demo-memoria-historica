@@ -204,44 +204,100 @@ const videosEducativos = [
   {
     titulo: "Historia del Conflicto Armado en Colombia",
     descripcion: "Documental completo sobre los orígenes y desarrollo del conflicto armado colombiano desde mediados del siglo XX.",
-    youtubeId: "dQw4w9WgXcQ", // Reemplazar con IDs reales
+    youtubeId: "d-nygSucq20", // Reemplazar con IDs reales
     duracion: 2850, // 47:30 minutos
     categoria: "conflicto"
   },
   {
     titulo: "El Proceso de Paz con las FARC",
     descripcion: "Análisis del proceso de negociación de paz en La Habana y la firma del acuerdo de 2016.",
-    youtubeId: "dQw4w9WgXcQ",
+    youtubeId: "YKmVbr3fRg0",
     duracion: 1920,
     categoria: "politico"
   },
   {
     titulo: "La Constitución de 1991: Una Nueva Colombia",
     descripcion: "Contexto histórico y principales cambios que trajo la Constitución Política de 1991.",
-    youtubeId: "dQw4w9WgXcQ",
+    youtubeId: "m-4UzHge7V8",
     duracion: 1560,
     categoria: "politico"
   },
   {
     titulo: "El Bogotazo y La Violencia",
     descripcion: "Los hechos del 9 de abril de 1948 y su impacto en la historia colombiana.",
-    youtubeId: "dQw4w9WgXcQ",
+    youtubeId: "FPTMx2GQjxM",
     duracion: 1800,
     categoria: "conflicto"
   },
   {
     titulo: "Movimientos Sociales en Colombia",
     descripcion: "Historia de las luchas sociales y movimientos populares en Colombia durante el siglo XX.",
-    youtubeId: "dQw4w9WgXcQ",
+    youtubeId: "5zE4Rx-M2PQ",
     duracion: 2100,
     categoria: "social"
   },
   {
     titulo: "La Cultura Colombiana a través de los Años",
     descripcion: "Evolución de la música, arte y tradiciones colombianas.",
-    youtubeId: "dQw4w9WgXcQ",
+    youtubeId: "g2CiCEfn9dk",
     duracion: 1680,
     categoria: "cultural"
+  },
+   {
+    titulo: 'La Independencia de Colombia - Documental Completo',
+    descripcion: 'Documental histórico sobre el proceso de independencia de Colombia, desde el Grito de Independencia hasta la Batalla de Boyacá.',
+    youtubeId: '1VbNrHuBVQw', // Reemplaza con tu ID real
+    categoria: 'politico',
+    duracion: 1545, // 25:45 en segundos
+  },
+  {
+    titulo: 'Gabriel García Márquez: Vida y Obra',
+    descripcion: 'Biografía del Premio Nobel colombiano y análisis de su obra literaria más importante.',
+    youtubeId: 'oUlalTgTpgE', // Reemplaza con tu ID real
+    categoria: 'cultural',
+    duracion: 2820, // 47:00 en segundos
+  },
+  {
+    titulo: 'Movimientos Sociales en Colombia: Del Paro Nacional a la Transformación',
+    descripcion: 'Documental sobre las protestas sociales en Colombia y su impacto en la política nacional.',
+    youtubeId: '2fSPGF1SyXE', // Reemplaza con tu ID real
+    categoria: 'social',
+    duracion: 2760, // 46:00 en segundos
+  },
+  {
+    titulo: 'Historia Económica de Colombia: Del Café al Petróleo',
+    descripcion: 'Análisis de la evolución económica de Colombia y los factores que han moldeado su desarrollo.',
+    youtubeId: 'TVIMI7Z_Z_s', // Reemplaza con tu ID real
+    categoria: 'economico',
+    duracion: 3120, // 52:00 en segundos
+  },
+  {
+    titulo: 'La Guerra de los Mil Días - Documental Histórico',
+    descripcion: 'Reconstrucción de la guerra civil que marcó el inicio del siglo XX en Colombia.',
+    youtubeId: 'DAvVQ5wEJMg', // Reemplaza con tu ID real
+    categoria: 'conflicto',
+    duracion: 2940, // 49:00 en segundos
+  },
+  {
+    titulo: 'Cultura Afrocolombiana: Raíces y Expresiones',
+    descripcion: 'Documental sobre la influencia y contribuciones de la cultura afro en Colombia.',
+    youtubeId: 'ZDQRf3ToSZQ', // Reemplaza con tu ID real
+    categoria: 'cultural',
+    duracion: 2640, // 44:00 en segundos
+  },
+  {
+    titulo: 'Revolución Liberal de 1930: Modernización de Colombia',
+    descripcion: 'Análisis de las reformas liberales que transformaron la sociedad colombiana en el siglo XX.',
+    youtubeId: '99k9hczHmtc', // Reemplaza con tu ID real
+    categoria: 'politico',
+    duracion: 3180, // 53:00 en segundos
+  },
+  {
+    titulo: 'Indígenas Colombianos: Guardianes del Territorio y la Cultura',
+    descripcion: 'Documental sobre las comunidades indígenas de Colombia y su lucha por la preservación cultural.',
+    youtubeId: 'fKwV8Xzh5oc', // Reemplaza con tu ID real
+    categoria: 'social',
+    duracion: 3300, // 55:00 en segundos
   }
 ];
 
