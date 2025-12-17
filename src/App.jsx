@@ -1,54 +1,64 @@
 import React, { useState } from 'react';
-import Home from './components/Home.jsx';
-import Login from './components/Login.jsx';
-import Timeline from './components/Timeline.jsx';
-import Trivia from './components/Trivia.jsx';
-import Dashboard from './components/Dashboard.jsx';
+import { authAPI } from './services/api';
+import Login from './components/Login';
+import Home from './components/Home';
+import Timeline from './components/Timeline';
+import Trivia from './components/Trivia';
+import Dashboard from './components/Dashboard';
+import Profile from './components/Profile';
+import ResultadosTrivia from './components/ResultadosTrivia';
 
-const App = () => {
-  const [user, setUser] = useState(localStorage.getItem('username') || '');
+function App() {
+  const [usuario, setUsuario] = useState(authAPI.getCurrentUser());
+  const [vistaActual, setVistaActual] = useState('home');
+
+  const handleLogin = (user) => {
+    setUsuario(user);
+    setVistaActual('home');
+  };
+
+  const handleLogout = () => {
+    authAPI.logout();
+    setUsuario(null);
+    setVistaActual('home');
+  };
+
+  const handleProfileUpdate = (updatedUser) => {
+    setUsuario({...usuario, ...updatedUser});
+  };
+
+  if (!usuario) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   return (
-    <div className="app" style={{ padding: '1rem' }}>
-      {!user ? (
-        <>
-          <Home />
-          <Login setUser={setUser} />
-        </>
-      ) : (
-        <div>
-          {/* Contenedor de cabecera con botón y saludo */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '1rem'
-          }}>
-            <h1 style={{ margin: 0 }}>Bienvenido, {user}</h1>
-            <button onClick={() => {
-              localStorage.removeItem('username');
-              localStorage.removeItem('puntajeTrivia');
-              localStorage.removeItem('horaIngreso');
-              setUser('');
-            }} style={{
-              backgroundColor: '#cc0000',
-              color: 'white',
-              border: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '8px',
-              cursor: 'pointer'
-            }}>
-              Cerrar sesión
-            </button>
-          </div>
-
-          <Timeline />
-          <Trivia />
-          <Dashboard user={user} />
+    <div className="App">
+      <nav className="navbar">
+        <h1>🇨🇴 Memoria Histórica</h1>
+        <div className="nav-buttons">
+          <button onClick={() => setVistaActual('home')}>🏠 Inicio</button>
+          <button onClick={() => setVistaActual('timeline')}>📅 Línea de Tiempo</button>
+          <button onClick={() => setVistaActual('trivia')}>🎯 Trivia</button>
+          <button onClick={() => setVistaActual('dashboard')}>📊 Dashboard</button>
+          <button onClick={() => setVistaActual('profile')}>👤 Perfil</button>
+          <button onClick={handleLogout} className="logout-btn">🚪 Salir</button>
         </div>
-      )}
+        <div className="user-info">
+          <span>Nivel {usuario.nivel || 1}</span>
+          <span>⭐ {usuario.puntos || 0} pts</span>
+        </div>
+      </nav>
+
+      <main>
+        {vistaActual === 'home' && <Home />}
+        {vistaActual === 'timeline' && <Timeline />}
+        {vistaActual === 'trivia' && <Trivia usuario={usuario} />}
+        {vistaActual === 'dashboard' && <Dashboard />}
+        {vistaActual === 'profile' && <Profile usuario={usuario} onUpdate={handleProfileUpdate} />}
+        {vistaActual === 'resultados' && <ResultadosTrivia />}
+      </main>
     </div>
   );
-};
+}
 
 export default App;
