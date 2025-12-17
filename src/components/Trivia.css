@@ -1,0 +1,517 @@
+/* src/components/Trivia.css */
+.trivia-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 500px;
+}
+
+/* Configuración de la trivia */
+.config-card {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  margin-top: 20px;
+}
+
+.config-card h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 1.8em;
+}
+
+.config-group {
+  margin-bottom: 25px;
+}
+
+.config-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 1.05em;
+}
+
+.config-group input,
+.config-group select {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1em;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.config-group input:focus,
+.config-group select:focus {
+  border-color: #667eea;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.start-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.start-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.start-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #cccccc;
+}
+
+.loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin: 20px 0;
+  color: #666;
+}
+
+.loading-message::before {
+  content: "⏳";
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 15px 0;
+  border-left: 4px solid #c33;
+  font-weight: 500;
+}
+
+/* Loading spinner */
+.loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Pantalla de juego */
+.trivia-header {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.progreso-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #666;
+  font-size: 1.1em;
+}
+
+.progreso-bar {
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progreso-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease-out;
+}
+
+.pregunta-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.pregunta-badges {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.dificultad-facil {
+  background: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.dificultad-medio {
+  background: #fff8e1;
+  color: #f57c00;
+  border: 1px solid #ffe082;
+}
+
+.dificultad-dificil {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.categoria {
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #bbdefb;
+}
+
+.puntos {
+  background: #fffde7;
+  color: #f9a825;
+  border: 1px solid #fff59d;
+}
+
+.pregunta-texto {
+  font-size: 1.4em;
+  color: #333;
+  margin-bottom: 30px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.opciones-grid {
+  display: grid;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.opcion-btn {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 20px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+  width: 100%;
+}
+
+.opcion-btn:hover:not(:disabled) {
+  border-color: #667eea;
+  background: #f8f9ff;
+  transform: translateX(5px);
+}
+
+.opcion-letra {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #667eea;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+  font-size: 1.1em;
+}
+
+.opcion-texto {
+  flex: 1;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.opcion-btn.correcta {
+  border-color: #4caf50;
+  background: #e8f5e9;
+}
+
+.opcion-btn.correcta .opcion-letra {
+  background: #4caf50;
+}
+
+.opcion-btn.incorrecta {
+  border-color: #f44336;
+  background: #ffebee;
+}
+
+.opcion-btn.incorrecta .opcion-letra {
+  background: #f44336;
+}
+
+.opcion-btn.deshabilitada {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.siguiente-btn {
+  width: 100%;
+  padding: 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.siguiente-btn:hover {
+  background: #45a049;
+}
+
+/* Resultados */
+.resultado-card {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  text-align: center;
+}
+
+.resultado-card h2 {
+  font-size: 2.2em;
+  margin-bottom: 30px;
+  color: #333;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.resultado-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.stat-grande {
+  display: flex;
+  flex-direction: column;
+  padding: 25px 20px;
+  background: #f8f9fa;
+  border-radius: 15px;
+  transition: transform 0.3s;
+}
+
+.stat-grande:hover {
+  transform: translateY(-5px);
+}
+
+.stat-valor {
+  font-size: 2.8em;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 1em;
+  color: #666;
+}
+
+.mensaje-resultado {
+  font-size: 1.3em;
+  color: #555;
+  margin: 30px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.resultado-acciones {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.btn-reintentar, .btn-secundario {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 200px;
+}
+
+.btn-reintentar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-reintentar:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secundario {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secundario:hover {
+  background: #5a6268;
+  transform: translateY(-3px);
+}
+
+/* Medallas nuevas */
+.medallas-nuevas {
+  margin-bottom: 40px;
+  padding: 25px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  border-radius: 15px;
+  animation: pulse 2s infinite;
+  border: 3px solid #ffc107;
+}
+
+.medallas-nuevas h3 {
+  margin: 0 0 25px 0;
+  color: #333;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.medallas-grid-nuevas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.medalla-nueva {
+  background: white;
+  padding: 20px 15px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.medalla-nueva:hover {
+  transform: scale(1.05);
+}
+
+.medalla-icono {
+  font-size: 3em;
+  display: block;
+  margin-bottom: 15px;
+  animation: bounce 1s infinite alternate;
+}
+
+.medalla-nombre {
+  font-size: 1em;
+  font-weight: 600;
+  color: #333;
+  display: block;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    box-shadow: 0 4px 25px rgba(255, 193, 7, 0.3);
+  }
+  50% { 
+    transform: scale(1.02); 
+    box-shadow: 0 6px 30px rgba(255, 193, 7, 0.5);
+  }
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+@keyframes medalPop {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.animate-medal {
+  animation: medalPop 0.8s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trivia-container {
+    padding: 15px;
+  }
+  
+  .config-card {
+    padding: 25px;
+  }
+  
+  .pregunta-texto {
+    font-size: 1.2em;
+  }
+  
+  .resultado-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-reintentar, .btn-secundario {
+    min-width: 100%;
+  }
+  
+  .medallas-grid-nuevas {
+    grid-template-columns: 1fr;
+  }
+}

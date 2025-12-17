@@ -31,12 +31,18 @@ const UserSchema = new mongoose.Schema({
   avatar: { type: String, default: 'default-avatar.png' },
   nivel: { type: Number, default: 1 },
   puntos: { type: Number, default: 0 },
-  medallas: [{ tipo: String, fecha: Date }],
+  medallas: [{
+    tipo: String,
+    nombre: String,
+    fecha: Date
+  }],
   estadisticas: {
     triviasCompletadas: { type: Number, default: 0 },
     respuestasCorrectas: { type: Number, default: 0 },
     respuestasIncorrectas: { type: Number, default: 0 },
-    tiempoTotal: { type: Number, default: 0 }
+    tiempoTotal: { type: Number, default: 0 },
+    racha: { type: Number, default: 0 },
+    mejorPorcentaje: { type: Number, default: 0 }
   },
   fechaRegistro: { type: Date, default: Date.now }
 });
@@ -80,9 +86,23 @@ const ResultadoSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', UserSchema);
+// Video Schema
+const VideoSchema = new mongoose.Schema({
+  titulo: { type: String, required: true },
+  descripcion: String,
+  youtubeId: { type: String, required: true },
+  duracion: Number,
+  categoria: String,
+  eventoRelacionado: { type: mongoose.Schema.Types.ObjectId, ref: 'Evento' },
+  vistas: { type: Number, default: 0 },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  createdAt: { type: Date, default: Date.now }
+});
+
 const Evento = mongoose.model('Evento', EventoSchema);
 const Pregunta = mongoose.model('Pregunta', PreguntaSchema);
 const Resultado = mongoose.model('Resultado', ResultadoSchema);
+const Video = mongoose.model('Video', VideoSchema);
 
 // ==================== MIDDLEWARE AUTH ====================
 const authMiddleware = async (req, res, next) => {
@@ -235,6 +255,20 @@ app.get('/api/trivia/preguntas', authMiddleware, async (req, res) => {
   }
 });
 
+// Obtener historial de trivias del usuario
+app.get('/api/trivia/historial', authMiddleware, async (req, res) => {
+  try {
+    const historial = await Resultado.find({ usuario: req.user._id })
+      .sort({ fecha: -1 })
+      .limit(50)
+      .populate('preguntasRespondidas.pregunta', 'pregunta categoria');
+    
+    res.json(historial);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener historial' });
+  }
+});
+
 // Guardar resultado de trivia
 app.post('/api/trivia/resultado', authMiddleware, async (req, res) => {
   try {
@@ -257,11 +291,70 @@ app.post('/api/trivia/resultado', authMiddleware, async (req, res) => {
     req.user.estadisticas.respuestasCorrectas += respuestasCorrectas;
     req.user.estadisticas.respuestasIncorrectas += (preguntasRespondidas.length - respuestasCorrectas);
     
-    // Sistema de niveles
+    // Sistema de niveles mejorado (cada nivel requiere más puntos)
     const puntosParaNivel = req.user.nivel * 100;
-    if (req.user.puntos >= puntosParaNivel) {
+    let nuevosMedallas = [];
+    
+    while (req.user.puntos >= req.user.nivel * 100) {
       req.user.nivel += 1;
-      req.user.medallas.push({ tipo: `nivel_${req.user.nivel}`, fecha: new Date() });
+      nuevosMedallas.push({
+        tipo: `nivel_${req.user.nivel}`,
+        nombre: `Nivel ${req.user.nivel} Alcanzado`,
+        fecha: new Date()
+      });
+    }
+    
+    // Medallas por logros específicos
+    if (porcentajeAcierto === 100) {
+      nuevosMedallas.push({
+        tipo: 'perfeccion',
+        nombre: 'Trivia Perfecta',
+        fecha: new Date()
+      });
+    }
+    
+    if (porcentajeAcierto >= 90) {
+      nuevosMedallas.push({
+        tipo: 'experto',
+        nombre: 'Experto en Historia',
+        fecha: new Date()
+      });
+    }
+    
+    if (req.user.estadisticas.triviasCompletadas === 10) {
+      nuevosMedallas.push({
+        tipo: 'perseverante',
+        nombre: 'Perseverante - 10 Trivias',
+        fecha: new Date()
+      });
+    }
+    
+    if (req.user.estadisticas.triviasCompletadas === 50) {
+      nuevosMedallas.push({
+        tipo: 'maestro',
+        nombre: 'Maestro de la Historia',
+        fecha: new Date()
+      });
+    }
+    
+    // Racha de victorias
+    if (porcentajeAcierto >= 80) {
+      req.user.estadisticas.racha = (req.user.estadisticas.racha || 0) + 1;
+      
+      if (req.user.estadisticas.racha >= 5) {
+        nuevosMedallas.push({
+          tipo: 'racha',
+          nombre: 'Racha de Fuego - 5 Trivias',
+          fecha: new Date()
+        });
+      }
+    } else {
+      req.user.estadisticas.racha = 0;
+    }
+    
+    // Agregar nuevas medallas
+    if (nuevosMedallas.length > 0) {
+      req.user.medallas.push(...nuevosMedallas);
     }
     
     await req.user.save();
@@ -271,8 +364,10 @@ app.post('/api/trivia/resultado', authMiddleware, async (req, res) => {
       usuario: {
         nivel: req.user.nivel,
         puntos: req.user.puntos,
-        estadisticas: req.user.estadisticas
-      }
+        estadisticas: req.user.estadisticas,
+        medallas: req.user.medallas
+      },
+      nuevasMedallas: nuevosMedallas
     });
   } catch (error) {
     res.status(500).json({ error: 'Error al guardar resultado' });
@@ -318,6 +413,86 @@ app.get('/api/user/ranking', async (req, res) => {
     res.json(ranking);
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener ranking' });
+  }
+});
+
+// ==================== RUTAS VIDEOS ====================
+
+// Obtener todos los videos
+app.get('/api/videos', async (req, res) => {
+  try {
+    const { categoria, busqueda } = req.query;
+    const filtro = {};
+    
+    if (categoria) filtro.categoria = categoria;
+    if (busqueda) {
+      filtro.$or = [
+        { titulo: { $regex: busqueda, $options: 'i' } },
+        { descripcion: { $regex: busqueda, $options: 'i' } }
+      ];
+    }
+    
+    const videos = await Video.find(filtro).sort({ createdAt: -1 });
+    res.json(videos);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener videos' });
+  }
+});
+
+// Registrar vista de video
+app.post('/api/videos/:id/vista', authMiddleware, async (req, res) => {
+  try {
+    const video = await Video.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { vistas: 1 } },
+      { new: true }
+    );
+    res.json(video);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al registrar vista' });
+  }
+});
+
+// Toggle like en video
+app.post('/api/videos/:id/like', authMiddleware, async (req, res) => {
+  try {
+    const video = await Video.findById(req.params.id);
+    const userId = req.user._id;
+    
+    if (video.likes.includes(userId)) {
+      video.likes = video.likes.filter(id => !id.equals(userId));
+    } else {
+      video.likes.push(userId);
+    }
+    
+    await video.save();
+    res.json(video);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al dar like' });
+  }
+});
+
+// ==================== RUTAS MAPAS ====================
+
+// Obtener eventos para mapa
+app.get('/api/eventos/mapa', async (req, res) => {
+  try {
+    const { categoria, decada } = req.query;
+    const filtro = { coordenadas: { $exists: true } };
+    
+    if (categoria) filtro.categoria = categoria;
+    if (decada) {
+      const year = parseInt(decada);
+      filtro.fecha = {
+        $gte: new Date(year, 0, 1),
+        $lt: new Date(year + 10, 0, 1)
+      };
+    }
+    
+    const eventos = await Evento.find(filtro).select('titulo fecha categoria coordenadas descripcion imagen fuentes');
+    res.json(eventos);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener eventos del mapa' });
   }
 });
 

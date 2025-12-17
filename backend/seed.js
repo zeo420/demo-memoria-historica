@@ -26,8 +26,19 @@ const PreguntaSchema = new mongoose.Schema({
   puntos: Number
 });
 
+const VideoSchema = new mongoose.Schema({
+  titulo: String,
+  descripcion: String,
+  youtubeId: String,
+  duracion: Number,
+  categoria: String,
+  vistas: { type: Number, default: 0 },
+  likes: [String]
+});
+
 const Evento = mongoose.model('Evento', EventoSchema);
 const Pregunta = mongoose.model('Pregunta', PreguntaSchema);
+const Video = mongoose.model('Video', VideoSchema);
 
 // Datos de eventos históricos de Colombia
 const eventosHistoricos = [
@@ -188,11 +199,58 @@ const preguntasTrivia = [
   }
 ];
 
+// Videos educativos
+const videosEducativos = [
+  {
+    titulo: "Historia del Conflicto Armado en Colombia",
+    descripcion: "Documental completo sobre los orígenes y desarrollo del conflicto armado colombiano desde mediados del siglo XX.",
+    youtubeId: "dQw4w9WgXcQ", // Reemplazar con IDs reales
+    duracion: 2850, // 47:30 minutos
+    categoria: "conflicto"
+  },
+  {
+    titulo: "El Proceso de Paz con las FARC",
+    descripcion: "Análisis del proceso de negociación de paz en La Habana y la firma del acuerdo de 2016.",
+    youtubeId: "dQw4w9WgXcQ",
+    duracion: 1920,
+    categoria: "politico"
+  },
+  {
+    titulo: "La Constitución de 1991: Una Nueva Colombia",
+    descripcion: "Contexto histórico y principales cambios que trajo la Constitución Política de 1991.",
+    youtubeId: "dQw4w9WgXcQ",
+    duracion: 1560,
+    categoria: "politico"
+  },
+  {
+    titulo: "El Bogotazo y La Violencia",
+    descripcion: "Los hechos del 9 de abril de 1948 y su impacto en la historia colombiana.",
+    youtubeId: "dQw4w9WgXcQ",
+    duracion: 1800,
+    categoria: "conflicto"
+  },
+  {
+    titulo: "Movimientos Sociales en Colombia",
+    descripcion: "Historia de las luchas sociales y movimientos populares en Colombia durante el siglo XX.",
+    youtubeId: "dQw4w9WgXcQ",
+    duracion: 2100,
+    categoria: "social"
+  },
+  {
+    titulo: "La Cultura Colombiana a través de los Años",
+    descripcion: "Evolución de la música, arte y tradiciones colombianas.",
+    youtubeId: "dQw4w9WgXcQ",
+    duracion: 1680,
+    categoria: "cultural"
+  }
+];
+
 async function seed() {
   try {
     console.log('🌱 Limpiando base de datos...');
     await Evento.deleteMany({});
     await Pregunta.deleteMany({});
+    await Video.deleteMany({});
     
     console.log('📚 Insertando eventos históricos...');
     await Evento.insertMany(eventosHistoricos);
@@ -200,9 +258,13 @@ async function seed() {
     console.log('❓ Insertando preguntas de trivia...');
     await Pregunta.insertMany(preguntasTrivia);
     
+    console.log('🎬 Insertando videos educativos...');
+    await Video.insertMany(videosEducativos);
+    
     console.log('✅ Base de datos poblada exitosamente!');
     console.log(`   - ${eventosHistoricos.length} eventos históricos`);
     console.log(`   - ${preguntasTrivia.length} preguntas de trivia`);
+    console.log(`   - ${videosEducativos.length} videos educativos`);
     
     process.exit(0);
   } catch (error) {

@@ -1,75 +1,510 @@
-import React, { useEffect, useState } from 'react';
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend
-} from 'recharts';
+// src/components/Dashboard.jsx - Dashboard actualizado con historial
+import React, { useState, useEffect } from 'react';
+import { triviaAPI, userAPI } from '../services/api';
 
-const obtenerMedalla = (puntaje, total = 10) => {
-  const porcentaje = (puntaje / total) * 100;
-  if (porcentaje === 100) return "🥇 Medalla de Oro";
-  if (porcentaje >= 75) return "🥈 Medalla de Plata";
-  if (porcentaje >= 50) return "🥉 Medalla de Bronce";
-  return "🎓 Participación";
-};
-
-const Dashboard = ({ user }) => {
-  const [puntaje, setPuntaje] = useState(0);
-  const [datosCategoria, setDatosCategoria] = useState([]);
-
-  const procesarDatos = () => {
-    const respuestas = JSON.parse(localStorage.getItem('respuestasTrivia') || '[]');
-    const resumen = {};
-
-    respuestas.forEach(r => {
-      if (!resumen[r.categoria]) {
-        resumen[r.categoria] = { categoria: r.categoria, correctas: 0 };
-      }
-      if (r.esCorrecta) resumen[r.categoria].correctas += 1;
-    });
-
-    const procesado = Object.values(resumen);
-    setDatosCategoria(procesado);
-  };
+const Dashboard = ({ usuario }) => {
+  const [historial, setHistorial] = useState([]);
+  const [estadisticas, setEstadisticas] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const puntajeGuardado = localStorage.getItem('puntajeTrivia');
-    if (puntajeGuardado) {
-      setPuntaje(parseInt(puntajeGuardado, 10));
-    }
-
-    procesarDatos();
-
-    const actualizarDesdeEvento = () => {
-      const nuevoPuntaje = localStorage.getItem('puntajeTrivia');
-      if (nuevoPuntaje) setPuntaje(parseInt(nuevoPuntaje, 10));
-      procesarDatos();
-    };
-
-    window.addEventListener('storage', actualizarDesdeEvento);
-    return () => window.removeEventListener('storage', actualizarDesdeEvento);
+    cargarDatos();
   }, []);
 
-  return (
-    <div style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc', borderRadius: '10px' }}>
-      <h2>📊 Resumen de Participación</h2>
-      <p><strong>Usuario:</strong> {user}</p>
-      <p><strong>Puntaje en Trivia:</strong> {puntaje} / 10</p>
-      <p><strong>Reconocimiento:</strong> {obtenerMedalla(puntaje, 10)}</p>
+  const cargarDatos = async () => {
+    try {
+      const [historialData, profile] = await Promise.all([
+        triviaAPI.getHistorial(),
+        userAPI.getProfile()
+      ]);
+      setHistorial(historialData);
+      setEstadisticas(profile.estadisticas);
+    } catch (error) {
+      console.error('Error al cargar dashboard:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      {datosCategoria.length > 0 && (
-        <>
-          <h3>Aciertos por Categoría</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={datosCategoria}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="categoria" />
-              <YAxis allowDecimals={false} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="correctas" fill="#1976d2" name="Respuestas correctas" />
-            </BarChart>
-          </ResponsiveContainer>
-        </>
-      )}
+  if (loading) {
+    return <div className="loading">Cargando estadísticas...</div>;
+  }
+
+  const promedioAcierto = historial.length > 0
+    ? Math.round(historial.reduce((sum, h) => sum + h.porcentajeAcierto, 0) / historial.length)
+    : 0;
+
+  const totalPuntos = historial.reduce((sum, h) => sum + h.puntosTotales, 0);
+
+  const formatearFecha = (fecha) => {
+    return new Date(fecha).toLocaleDateString('es-CO', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1>📊 Mi Dashboard</h1>
+        <p>Resumen de tu progreso y estadísticas</p>
+      </div>
+
+      {/* Tarjetas de resumen */}
+      <div className="stats-summary">
+        <div className="summary-card">
+          <div className="summary-icon">🎯</div>
+          <div className="summary-info">
+            <span className="summary-value">{estadisticas.triviasCompletadas}</span>
+            <span className="summary-label">Trivias Completadas</span>
+          </div>
+        </div>
+
+        <div className="summary-card">
+          <div className="summary-icon">📈</div>
+          <div className="summary-info">
+            <span className="summary-value">{promedioAcierto}%</span>
+            <span className="summary-label">Promedio de Acierto</span>
+          </div>
+        </div>
+
+        <div className="summary-card">
+          <div className="summary-icon">⭐</div>
+          <div className="summary-info">
+            <span className="summary-value">{totalPuntos}</span>
+            <span className="summary-label">Puntos Totales</span>
+          </div>
+        </div>
+
+        <div className="summary-card">
+          <div className="summary-icon">🔥</div>
+          <div className="summary-info">
+            <span className="summary-value">{estadisticas.racha || 0}</span>
+            <span className="summary-label">Racha Actual</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Gráfica de progreso */}
+      <div className="dashboard-grid">
+        <div className="chart-card">
+          <h3>📊 Progreso Reciente</h3>
+          <div className="chart-container">
+            {historial.slice(0, 10).reverse().map((item, idx) => (
+              <div key={item._id} className="bar-container">
+                <div 
+                  className="bar"
+                  style={{ 
+                    height: `${item.porcentajeAcierto}%`,
+                    backgroundColor: item.porcentajeAcierto >= 80 ? '#28a745' : 
+                                   item.porcentajeAcierto >= 60 ? '#ffc107' : '#dc3545'
+                  }}
+                >
+                  <span className="bar-value">{item.porcentajeAcierto}%</span>
+                </div>
+                <span className="bar-label">#{historial.length - idx}</span>
+              </div>
+            ))}
+          </div>
+          {historial.length === 0 && (
+            <p className="no-data">
+              Completa tu primera trivia para ver tu progreso aquí
+            </p>
+          )}
+        </div>
+
+        <div className="stats-detailed-card">
+          <h3>📈 Estadísticas Detalladas</h3>
+          <div className="detailed-stats">
+            <div className="detailed-stat">
+              <span className="stat-label">Total de Respuestas</span>
+              <span className="stat-value">
+                {estadisticas.respuestasCorrectas + estadisticas.respuestasIncorrectas}
+              </span>
+            </div>
+            
+            <div className="detailed-stat success">
+              <span className="stat-label">✅ Correctas</span>
+              <span className="stat-value">{estadisticas.respuestasCorrectas}</span>
+            </div>
+            
+            <div className="detailed-stat error">
+              <span className="stat-label">❌ Incorrectas</span>
+              <span className="stat-value">{estadisticas.respuestasIncorrectas}</span>
+            </div>
+
+            <div className="detailed-stat">
+              <span className="stat-label">Tasa de Éxito Global</span>
+              <span className="stat-value">
+                {estadisticas.respuestasCorrectas > 0
+                  ? Math.round(
+                      (estadisticas.respuestasCorrectas /
+                        (estadisticas.respuestasCorrectas + estadisticas.respuestasIncorrectas)) *
+                        100
+                    )
+                  : 0}%
+              </span>
+            </div>
+
+            <div className="detailed-stat">
+              <span className="stat-label">Mejor Resultado</span>
+              <span className="stat-value">{estadisticas.mejorPorcentaje || 0}%</span>
+            </div>
+
+            <div className="detailed-stat">
+              <span className="stat-label">Peor Resultado</span>
+              <span className="stat-value">
+                {historial.length > 0 
+                  ? Math.min(...historial.map(h => h.porcentajeAcierto))
+                  : 0}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Historial reciente */}
+      <div className="recent-history">
+        <h3>🕐 Historial Reciente (Últimas 10 trivias)</h3>
+        <div className="history-table">
+          <div className="history-header">
+            <span>#</span>
+            <span>Fecha</span>
+            <span>Precisión</span>
+            <span>Puntos</span>
+            <span>Preguntas</span>
+            <span>Estado</span>
+          </div>
+          {historial.slice(0, 10).map((item, idx) => (
+            <div key={item._id} className="history-row">
+              <span className="history-number">{historial.length - idx}</span>
+              <span className="history-date">{formatearFecha(item.fecha)}</span>
+              <span className={`history-percentage ${
+                item.porcentajeAcierto >= 80 ? 'excelente' : 
+                item.porcentajeAcierto >= 60 ? 'bueno' : 'regular'
+              }`}>
+                {item.porcentajeAcierto}%
+              </span>
+              <span className="history-points">+{item.puntosTotales}</span>
+              <span className="history-questions">{item.preguntasRespondidas.length}</span>
+              <span className={`history-status ${
+                item.porcentajeAcierto >= 80 ? 'excelente' : 
+                item.porcentajeAcierto >= 60 ? 'bueno' : 'regular'
+              }`}>
+                {item.porcentajeAcierto >= 80 ? '🏆 Excelente' : 
+                 item.porcentajeAcierto >= 60 ? '👍 Bien' : '📚 Mejorable'}
+              </span>
+            </div>
+          ))}
+          {historial.length === 0 && (
+            <p className="no-history">
+              No has completado ninguna trivia aún. ¡Empieza ahora!
+            </p>
+          )}
+        </div>
+      </div>
+
+      <style jsx>{`
+        .dashboard-container {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+
+        .dashboard-header {
+          margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+          font-size: 2.5em;
+          color: #333;
+          margin-bottom: 10px;
+        }
+
+        .dashboard-header p {
+          color: #666;
+          font-size: 1.1em;
+        }
+
+        .stats-summary {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+          margin-bottom: 30px;
+        }
+
+        .summary-card {
+          background: white;
+          border-radius: 15px;
+          padding: 25px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          transition: transform 0.3s;
+        }
+
+        .summary-card:hover {
+          transform: translateY(-5px);
+        }
+
+        .summary-icon {
+          font-size: 3em;
+          width: 70px;
+          height: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 15px;
+        }
+
+        .summary-info {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .summary-value {
+          font-size: 2em;
+          font-weight: bold;
+          color: #333;
+        }
+
+        .summary-label {
+          color: #666;
+          font-size: 0.9em;
+        }
+
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 20px;
+          margin-bottom: 30px;
+        }
+
+        .chart-card, .stats-detailed-card, .recent-history {
+          background: white;
+          border-radius: 15px;
+          padding: 25px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3, .stats-detailed-card h3, .recent-history h3 {
+          margin: 0 0 20px 0;
+          color: #333;
+        }
+
+        .chart-container {
+          display: flex;
+          align-items: flex-end;
+          gap: 10px;
+          height: 300px;
+          padding: 20px 0;
+        }
+
+        .bar-container {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .bar {
+          width: 100%;
+          min-height: 40px;
+          border-radius: 8px 8px 0 0;
+          position: relative;
+          transition: all 0.3s;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+          padding-top: 5px;
+        }
+
+        .bar:hover {
+          opacity: 0.8;
+          transform: scale(1.05);
+        }
+
+        .bar-value {
+          font-size: 0.8em;
+          font-weight: bold;
+          color: white;
+        }
+
+        .bar-label {
+          font-size: 0.85em;
+          color: #666;
+        }
+
+        .detailed-stats {
+          display: grid;
+          gap: 15px;
+        }
+
+        .detailed-stat {
+          display: flex;
+          justify-content: space-between;
+          padding: 15px;
+          background: #f8f9fa;
+          border-radius: 10px;
+          border-left: 4px solid #667eea;
+        }
+
+        .detailed-stat.success {
+          border-left-color: #28a745;
+        }
+
+        .detailed-stat.error {
+          border-left-color: #dc3545;
+        }
+
+        .detailed-stat .stat-label {
+          color: #666;
+          font-size: 0.95em;
+        }
+
+        .detailed-stat .stat-value {
+          font-weight: bold;
+          font-size: 1.2em;
+          color: #333;
+        }
+
+        .history-table {
+          overflow-x: auto;
+        }
+
+        .history-header {
+          display: grid;
+          grid-template-columns: 60px 150px 100px 100px 100px 1fr;
+          gap: 15px;
+          padding: 15px;
+          background: #f8f9fa;
+          border-radius: 10px;
+          font-weight: bold;
+          color: #333;
+          margin-bottom: 10px;
+        }
+
+        .history-row {
+          display: grid;
+          grid-template-columns: 60px 150px 100px 100px 100px 1fr;
+          gap: 15px;
+          padding: 15px;
+          border: 2px solid #e0e0e0;
+          border-radius: 10px;
+          margin-bottom: 10px;
+          align-items: center;
+          transition: all 0.3s;
+        }
+
+        .history-row:hover {
+          border-color: #667eea;
+          transform: translateX(5px);
+        }
+
+        .history-number {
+          font-weight: bold;
+          color: #667eea;
+        }
+
+        .history-date {
+          color: #666;
+          font-size: 0.9em;
+        }
+
+        .history-percentage {
+          font-weight: bold;
+          font-size: 1.1em;
+        }
+
+        .history-percentage.excelente {
+          color: #28a745;
+        }
+
+        .history-percentage.bueno {
+          color: #ffc107;
+        }
+
+        .history-percentage.regular {
+          color: #dc3545;
+        }
+
+        .history-points {
+          color: #667eea;
+          font-weight: bold;
+        }
+
+        .history-status {
+          padding: 5px 12px;
+          border-radius: 15px;
+          font-size: 0.85em;
+          font-weight: 600;
+          text-align: center;
+        }
+
+        .history-status.excelente {
+          background: #d4edda;
+          color: #155724;
+        }
+
+        .history-status.bueno {
+          background: #fff3cd;
+          color: #856404;
+        }
+
+        .history-status.regular {
+          background: #f8d7da;
+          color: #721c24;
+        }
+
+        .no-data, .no-history {
+          text-align: center;
+          color: #999;
+          padding: 40px;
+          font-size: 1.1em;
+        }
+
+        .loading {
+          text-align: center;
+          padding: 60px;
+          font-size: 1.2em;
+          color: #666;
+        }
+
+        @media (max-width: 1024px) {
+          .dashboard-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .history-header, .history-row {
+            grid-template-columns: 50px 120px 80px 80px 80px 1fr;
+            gap: 10px;
+            font-size: 0.9em;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .history-header, .history-row {
+            grid-template-columns: 1fr;
+            text-align: left;
+          }
+
+          .history-header span, .history-row span {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          .history-header span::before, .history-row span::before {
+            content: attr(data-label);
+            font-weight: bold;
+            color: #666;
+          }
+        }
+      `}</style>
     </div>
   );
 };

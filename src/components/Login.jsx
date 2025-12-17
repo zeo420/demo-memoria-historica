@@ -94,7 +94,7 @@ const Login = ({ onLogin }) => {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <h1>🇨🇴 Memoria Histórica</h1>
+          <h1>Memoria Histórica</h1>
           <p>Descubre y aprende sobre la historia de Colombia</p>
         </div>
 

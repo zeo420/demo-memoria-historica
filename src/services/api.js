@@ -87,6 +87,11 @@ export const eventosAPI = {
   update: async (id, eventoData) => {
     const response = await api.put(`/eventos/${id}`, eventoData);
     return response.data;
+  },
+
+  getMapa: async (params = {}) => {
+    const response = await api.get('/eventos/mapa', { params });
+    return response.data;
   }
 };
 
@@ -127,6 +132,32 @@ export const userAPI = {
 
   getEstadisticas: async () => {
     const response = await api.get('/user/estadisticas');
+    return response.data;
+  }
+};
+
+// ==================== VIDEOS ====================
+export const videosAPI = {
+  getAll: async (params = {}) => {
+    const response = await api.get('/videos', { params });
+    return response.data;
+  },
+
+  registrarVista: async (videoId) => {
+    const response = await api.post(`/videos/${videoId}/vista`);
+    return response.data;
+  },
+
+  toggleLike: async (videoId) => {
+    const response = await api.post(`/videos/${videoId}/like`);
+    return response.data;
+  }
+};
+
+// ==================== MAPAS ====================
+export const mapasAPI = {
+  getEventosMapa: async (params = {}) => {
+    const response = await api.get('/eventos/mapa', { params });
     return response.data;
   }
 };
