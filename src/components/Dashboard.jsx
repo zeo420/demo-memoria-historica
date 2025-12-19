@@ -1,4 +1,3 @@
-// src/components/Dashboard.jsx - Con iconos de react-icons
 import React, { useState, useEffect } from 'react';
 import { triviaAPI, userAPI } from '../services/api';
 import {
@@ -17,6 +16,7 @@ import {
   MdTrendingUp,
   MdSchedule
 } from 'react-icons/md';
+import './Dashboard.css';
 
 const Dashboard = ({ usuario }) => {
   const [historial, setHistorial] = useState([]);
@@ -104,7 +104,6 @@ const Dashboard = ({ usuario }) => {
 
   return (
     <div className="dashboard-container">
-      {/* Contenedor principal para header y stats en la misma fila */}
       <div className="dashboard-top-section">
         <div className="dashboard-header">
           <h1>
@@ -114,9 +113,8 @@ const Dashboard = ({ usuario }) => {
           <p>Resumen de tu progreso y estadísticas</p>
         </div>
 
-        {/* Tarjetas de resumen */}
         <div className="stats-summary">
-          <div className="summary-card">
+          <div className="summary-card-dash">
             <div className="summary-icon">
               <FaBullseye style={{ fontSize: '2em', color: 'white' }} />
             </div>
@@ -126,7 +124,7 @@ const Dashboard = ({ usuario }) => {
             </div>
           </div>
 
-          <div className="summary-card">
+          <div className="summary-card-dash">
             <div className="summary-icon">
               <MdTrendingUp style={{ fontSize: '2em', color: 'white' }} />
             </div>
@@ -136,7 +134,7 @@ const Dashboard = ({ usuario }) => {
             </div>
           </div>
 
-          <div className="summary-card">
+          <div className="summary-card-dash">
             <div className="summary-icon">
               <FaStar style={{ fontSize: '2em', color: 'white' }} />
             </div>
@@ -146,7 +144,7 @@ const Dashboard = ({ usuario }) => {
             </div>
           </div>
 
-          <div className="summary-card">
+          <div className="summary-card-dash">
             <div className="summary-icon">
               <FaFire style={{ fontSize: '2em', color: 'white' }} />
             </div>
@@ -158,7 +156,6 @@ const Dashboard = ({ usuario }) => {
         </div>
       </div>
 
-      {/* Gráfica de progreso */}
       <div className="dashboard-grid">
         <div className="chart-card">
           <h3>
@@ -248,7 +245,6 @@ const Dashboard = ({ usuario }) => {
         </div>
       </div>
 
-      {/* Historial reciente */}
       <div className="recent-history">
         <h3>
           <MdSchedule style={{ marginRight: '8px', verticalAlign: 'middle' }} />
@@ -303,400 +299,6 @@ const Dashboard = ({ usuario }) => {
           )}
         </div>
       </div>
-
-      <style jsx>{`
-        .dashboard-container {
-          max-width: 1400px;
-          margin: 0 auto;
-        }
-
-        /* NUEVA SECCIÓN: Contenedor para header y stats en la misma fila */
-        .dashboard-top-section {
-          display: flex;
-          gap: 30px;
-          margin-bottom: 30px;
-          align-items: flex-start;
-        }
-
-        .dashboard-header {
-          flex: 1;
-          min-width: 300px;
-        }
-
-        .dashboard-header h1 {
-          color: #333;
-          margin-bottom: 10px;
-          display: flex;
-          align-items: center;
-        }
-
-        .dashboard-header p {
-          color: #666;
-          font-size: 1.1em;
-        }
-
-        .stats-summary {
-          flex: 2;
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 15px;
-          min-width: 0; /* Permite que se ajuste al contenedor */
-        }
-
-        .summary-card {
-          background: white;
-          border-radius: 15px;
-          padding: 20px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-          display: flex;
-          align-items: center;
-          gap: 15px;
-          transition: transform 0.3s;
-        }
-
-        .summary-card:hover {
-          transform: translateY(-5px);
-        }
-
-        .summary-icon {
-          width: 60px;
-          height: 60px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: linear-gradient(135deg, #2a2a2aff 0%, #2d4dffff 100%);
-          border-radius: 15px;
-          flex-shrink: 0;
-        }
-
-        .summary-info {
-          display: flex;
-          flex-direction: column;
-          min-width: 0; /* Permite que el texto se ajuste */
-        }
-
-        .summary-value {
-          font-size: 1.8em;
-          font-weight: bold;
-          color: #333;
-          line-height: 1;
-        }
-
-        .summary-label {
-          color: #666;
-          font-size: 0.85em;
-          margin-top: 5px;
-          line-height: 1.2;
-        }
-
-        .dashboard-grid {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 20px;
-          margin-bottom: 30px;
-        }
-
-        .chart-card, .stats-detailed-card, .recent-history {
-          background: white;
-          border-radius: 15px;
-          padding: 25px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .chart-card h3, .stats-detailed-card h3, .recent-history h3 {
-          margin: 0 0 20px 0;
-          color: #333;
-          display: flex;
-          align-items: center;
-        }
-
-        .chart-container {
-          display: flex;
-          align-items: flex-end;
-          gap: 10px;
-          height: 300px;
-          padding: 20px 0;
-        }
-
-        .bar-container {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .bar {
-          width: 100%;
-          min-height: 40px;
-          border-radius: 8px 8px 0 0;
-          position: relative;
-          transition: all 0.3s;
-          display: flex;
-          align-items: flex-start;
-          justify-content: center;
-          padding-top: 5px;
-        }
-
-        .bar:hover {
-          opacity: 0.8;
-          transform: scale(1.05);
-        }
-
-        .bar-value {
-          font-size: 0.8em;
-          font-weight: bold;
-          color: white;
-        }
-
-        .bar-label {
-          font-size: 0.85em;
-          color: #666;
-        }
-
-        .detailed-stats {
-          display: grid;
-          gap: 15px;
-        }
-
-        .detailed-stat {
-          display: flex;
-          justify-content: space-between;
-          padding: 15px;
-          background: #f8f9fa;
-          border-radius: 10px;
-          border-left: 4px solid #667eea;
-        }
-
-        .detailed-stat.success {
-          border-left-color: #28a745;
-        }
-
-        .detailed-stat.error {
-          border-left-color: #dc3545;
-        }
-
-        .detailed-stat .stat-label {
-          color: #666;
-          font-size: 0.95em;
-          display: flex;
-          align-items: center;
-        }
-
-        .detailed-stat .stat-value {
-          font-weight: bold;
-          font-size: 1.2em;
-          color: #333;
-        }
-
-        .history-table {
-          overflow-x: auto;
-        }
-
-        .history-header {
-          display: grid;
-          grid-template-columns: 60px 150px 100px 100px 100px 1fr;
-          gap: 15px;
-          padding: 15px;
-          background: #f8f9fa;
-          border-radius: 10px;
-          font-weight: bold;
-          color: #333;
-          margin-bottom: 10px;
-        }
-
-        .history-row {
-          display: grid;
-          grid-template-columns: 60px 150px 100px 100px 100px 1fr;
-          gap: 15px;
-          padding: 15px;
-          border: 2px solid #e0e0e0;
-          border-radius: 10px;
-          margin-bottom: 10px;
-          align-items: center;
-          transition: all 0.3s;
-        }
-
-        .history-row:hover {
-          border-color: #667eea;
-          transform: translateX(5px);
-        }
-
-        .history-number {
-          font-weight: bold;
-          color: #667eea;
-        }
-
-        .history-date {
-          color: #666;
-          font-size: 0.9em;
-        }
-
-        .history-percentage {
-          font-weight: bold;
-          font-size: 1.1em;
-        }
-
-        .history-percentage.excelente {
-          color: #28a745;
-        }
-
-        .history-percentage.bueno {
-          color: #ffc107;
-        }
-
-        .history-percentage.regular {
-          color: #dc3545;
-        }
-
-        .history-points {
-          color: #667eea;
-          font-weight: bold;
-        }
-
-        .history-status {
-          padding: 5px 12px;
-          border-radius: 15px;
-          font-size: 0.85em;
-          font-weight: 600;
-          text-align: center;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 4px;
-        }
-
-        .history-status.excelente {
-          background: #d4edda;
-          color: #155724;
-        }
-
-        .history-status.bueno {
-          background: #fff3cd;
-          color: #856404;
-        }
-
-        .history-status.regular {
-          background: #f8d7da;
-          color: #721c24;
-        }
-
-        .no-data, .no-history {
-          text-align: center;
-          color: #999;
-          padding: 40px;
-          font-size: 1.1em;
-        }
-
-        .loading {
-          text-align: center;
-          padding: 60px;
-          font-size: 1.2em;
-          color: #666;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 20px;
-        }
-
-        .loading-spinner {
-          width: 40px;
-          height: 40px;
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid #667eea;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive para el nuevo layout */
-        @media (max-width: 1200px) {
-          .dashboard-top-section {
-            flex-direction: column;
-            gap: 20px;
-          }
-          
-          .dashboard-header {
-            min-width: 100%;
-          }
-          
-          .stats-summary {
-            grid-template-columns: repeat(4, 1fr);
-            width: 100%;
-          }
-        }
-
-        @media (max-width: 1024px) {
-          .dashboard-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .stats-summary {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .history-header, .history-row {
-            grid-template-columns: 50px 120px 80px 80px 80px 1fr;
-            gap: 10px;
-            font-size: 0.9em;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .stats-summary {
-            grid-template-columns: 1fr;
-          }
-
-          .summary-card {
-            padding: 15px;
-          }
-
-          .summary-icon {
-            width: 50px;
-            height: 50px;
-          }
-
-          .summary-value {
-            font-size: 1.5em;
-          }
-
-          .history-header, .history-row {
-            grid-template-columns: 1fr;
-            text-align: left;
-          }
-
-          .history-header span, .history-row span {
-            display: flex;
-            justify-content: space-between;
-          }
-
-          .history-header span::before, .history-row span::before {
-            content: attr(data-label);
-            font-weight: bold;
-            color: #666;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .dashboard-top-section {
-            gap: 15px;
-          }
-
-          .summary-card {
-            flex-direction: column;
-            text-align: center;
-            gap: 10px;
-          }
-
-          .summary-info {
-            align-items: center;
-          }
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,6 +1,3 @@
-// ============================================
-// 1. Trivia.jsx - Con iconos de react-icons
-// ============================================
 import React, { useState, useEffect } from 'react';
 import { triviaAPI } from '../services/api';
 import './Trivia.css';
@@ -180,7 +177,7 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
           porcentajeAcierto
         });
 
-        console.log('✅ Resultado guardado:', resultado);
+        console.log('Resultado guardado:', resultado);
         
         if (onTriviaComplete) {
           onTriviaComplete(resultado.usuario);

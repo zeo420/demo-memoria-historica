@@ -1,4 +1,3 @@
-// server.js - Backend Node.js + Express + MongoDB
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -18,8 +17,8 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/memoria-historica', {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => console.log('✅ MongoDB conectado'))
-  .catch(err => console.error('❌ Error MongoDB:', err));
+}).then(() => console.log('MongoDB conectado'))
+  .catch(err => console.error('Error MongoDB:', err));
 
 // ==================== MODELOS ====================
 
@@ -499,5 +498,5 @@ app.get('/api/eventos/mapa', async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });

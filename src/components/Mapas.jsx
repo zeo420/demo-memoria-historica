@@ -1,4 +1,3 @@
-// src/components/Mapas.jsx - Con iconos de react-icons
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet';
@@ -34,7 +33,6 @@ import {
   GiTwoCoins
 } from 'react-icons/gi';
 
-// [El array eventosHistoricos permanece igual - solo importamos los iconos]
 const eventosHistoricos = [
   { 
     id: 1, 
@@ -1120,7 +1118,7 @@ const eventosHistoricos = [
 
 const Mapas = () => {
  const [eventos] = useState(eventosHistoricos);
-  const [eventoSeleccionado, setEventoSeleccionado] = useState(eventosHistoricos[2]); // Toma del Palacio por defecto
+  const [eventoSeleccionado, setEventoSeleccionado] = useState(eventosHistoricos[2]); 
   const [filtros, setFiltros] = useState({
     categoria: '',
     decada: '',
@@ -1130,7 +1128,7 @@ const Mapas = () => {
   const [modoViaje, setModoViaje] = useState(false);
   const [viajeIndex, setViajeIndex] = useState(0);
   const [viajeActivo, setViajeActivo] = useState(false);
-  const [eventosViaje, setEventosViaje] = useState([]); // Eventos filtrados para el viaje
+  const [eventosViaje, setEventosViaje] = useState([]); 
   const mapRef = useRef(null);
   const viajeIntervalRef = useRef(null);
 
@@ -1265,24 +1263,6 @@ const Mapas = () => {
       economico: '💰'
     };
     return iconos[categoria] || '📍';
-  };
-
-  const getCategoriaIconComponent = (categoria) => {
-    const size = 16;
-    switch(categoria) {
-      case 'politico':
-        return <FaGlobeAmericas size={size} />;
-      case 'conflicto':
-        return <GiCrossedSwords size={size} />;
-      case 'social':
-        return <FaMapMarkerAlt size={size} />;
-      case 'cultural':
-        return <GiPalette size={size} />;
-      case 'economico':
-        return <GiTwoCoins size={size} />;
-      default:
-        return <FaMapMarkerAlt size={size} />;
-    }
   };
 
   const getCategoriaColor = (categoria) => {
@@ -1466,7 +1446,6 @@ const Mapas = () => {
 
   return (
     <div className="mapas-container">
-      {/* Header minimalista */}
       <div className="mapas-header">
         <div className="header-content">
           <h1>
@@ -1583,7 +1562,6 @@ const Mapas = () => {
         </div>
       </div>
 
-      {/* Contenido principal */}
       <div className="mapas-content">
         <div className="mapa-principal">
           <div className="mapa-wrapper">
@@ -1684,7 +1662,6 @@ const Mapas = () => {
             </MapContainer>
           </div>
           
-          {/* Leyenda */}
           <div className="leyenda-mapa">
             <div className="leyenda-titulo">Leyenda:</div>
             {categorias.slice(1).map(cat => (
@@ -1704,7 +1681,6 @@ const Mapas = () => {
           </div>
         </div>
 
-        {/* Panel lateral */}
         <div className="panel-lateral">
           {eventoSeleccionado ? (
             <motion.div

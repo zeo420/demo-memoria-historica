@@ -1,12 +1,11 @@
-// src/components/Videos.jsx - Con iconos de react-icons
 import React, { useState, useEffect } from 'react';
 import { videosAPI } from '../services/api';
 import './Videos.css';
-import { 
-  FaVideo, 
-  FaSearch, 
-  FaPlay, 
-  FaHeart, 
+import {
+  FaVideo,
+  FaSearch,
+  FaPlay,
+  FaHeart,
   FaRegHeart,
   FaEdit,
   FaTrash,
@@ -20,7 +19,7 @@ import {
   FaUser,
   FaCheckCircle
 } from 'react-icons/fa';
-import { 
+import {
   MdTimer,
   MdPerson,
   MdGroup,
@@ -57,9 +56,9 @@ const Videos = () => {
   });
 
   // Verificar si es admin (en un caso real, esto vendría del backend)
-  const esAdmin = localStorage.getItem('userRole') === 'admin' || 
-                  localStorage.getItem('isAdmin') === 'true' ||
-                  true; // Para desarrollo
+  const esAdmin = localStorage.getItem('userRole') === 'admin' ||
+    localStorage.getItem('isAdmin') === 'true' ||
+    true;
 
   useEffect(() => {
     cargarVideos();
@@ -100,13 +99,13 @@ const Videos = () => {
         }
         return newSet;
       });
-      
+
       // Actualizar contador localmente
-      setVideos(prevVideos => 
+      setVideos(prevVideos =>
         prevVideos.map(video => {
           if (video._id === videoId) {
-            const nuevoLikeCount = liked.has(videoId) 
-              ? (video.likes || 0) - 1 
+            const nuevoLikeCount = liked.has(videoId)
+              ? (video.likes || 0) - 1
               : (video.likes || 0) + 1;
             return { ...video, likes: Math.max(0, nuevoLikeCount) };
           }
@@ -156,7 +155,7 @@ const Videos = () => {
 
   const handleEliminarVideo = async (videoId) => {
     if (!window.confirm('¿Estás seguro de eliminar este video?')) return;
-    
+
     try {
       await videosAPI.delete(videoId);
       setVideos(videos.filter(v => v._id !== videoId));
@@ -171,7 +170,7 @@ const Videos = () => {
   };
 
   const iniciarEdicion = (video) => {
-    setEditandoVideo({...video});
+    setEditandoVideo({ ...video });
   };
 
   const cancelarEdicion = () => {
@@ -198,24 +197,23 @@ const Videos = () => {
     if (filtros.categoria && video.categoria !== filtros.categoria) return false;
     if (filtros.busqueda) {
       const busqueda = filtros.busqueda.toLowerCase();
-      return video.titulo.toLowerCase().includes(busqueda) || 
-             video.descripcion.toLowerCase().includes(busqueda);
+      return video.titulo.toLowerCase().includes(busqueda) ||
+        video.descripcion.toLowerCase().includes(busqueda);
     }
     return true;
   });
 
   return (
     <div className="videos-container">
-      {/* Header */}
       <div className="videos-header">
         <h1>
           <FaVideo className="header-icon" />
           Videos Educativos
         </h1>
         <p className="subtitle">Explora la historia de Colombia a través de contenido audiovisual</p>
-        
+
         {esAdmin && (
-          <button 
+          <button
             className={`admin-toggle-btn ${modoAdmin ? 'active' : ''}`}
             onClick={() => setModoAdmin(!modoAdmin)}
           >
@@ -234,15 +232,13 @@ const Videos = () => {
         )}
       </div>
 
-      {/* Panel de Administración */}
       {modoAdmin && (
         <div className="admin-panel">
           <h2 className="admin-title">
             <MdAdminPanelSettings className="admin-icon" />
             Panel de Administración
           </h2>
-          
-          {/* Formulario para agregar nuevo video */}
+
           <div className="admin-section">
             <h3>
               <MdAdd style={{ marginRight: '8px' }} />
@@ -255,12 +251,12 @@ const Videos = () => {
                   <input
                     type="text"
                     value={nuevoVideo.titulo}
-                    onChange={(e) => setNuevoVideo({...nuevoVideo, titulo: e.target.value})}
+                    onChange={(e) => setNuevoVideo({ ...nuevoVideo, titulo: e.target.value })}
                     placeholder="Ej: La Independencia de Colombia"
                     required
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label>URL de YouTube *</label>
                   <input
@@ -269,7 +265,7 @@ const Videos = () => {
                     onChange={(e) => {
                       const url = e.target.value;
                       const id = extractYoutubeId(url) || url;
-                      setNuevoVideo({...nuevoVideo, youtubeId: id});
+                      setNuevoVideo({ ...nuevoVideo, youtubeId: id });
                     }}
                     placeholder="https://www.youtube.com/watch?v=..."
                     required
@@ -281,12 +277,12 @@ const Videos = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="form-group">
                   <label>Categoría *</label>
                   <select
                     value={nuevoVideo.categoria}
-                    onChange={(e) => setNuevoVideo({...nuevoVideo, categoria: e.target.value})}
+                    onChange={(e) => setNuevoVideo({ ...nuevoVideo, categoria: e.target.value })}
                   >
                     {categorias.map(cat => (
                       <option key={cat.valor} value={cat.valor}>
@@ -295,19 +291,19 @@ const Videos = () => {
                     ))}
                   </select>
                 </div>
-                
+
                 <div className="form-group full-width">
                   <label>Descripción *</label>
                   <textarea
                     value={nuevoVideo.descripcion}
-                    onChange={(e) => setNuevoVideo({...nuevoVideo, descripcion: e.target.value})}
+                    onChange={(e) => setNuevoVideo({ ...nuevoVideo, descripcion: e.target.value })}
                     placeholder="Descripción detallada del video..."
                     rows="4"
                     required
                   />
                 </div>
               </div>
-              
+
               <div className="form-actions">
                 <button type="submit" className="submit-btn">
                   <FaSave style={{ marginRight: '8px' }} />
@@ -317,7 +313,6 @@ const Videos = () => {
             </form>
           </div>
 
-          {/* Lista de videos para edición */}
           <div className="admin-section">
             <h3>
               <FaEdit style={{ marginRight: '8px' }} />
@@ -332,14 +327,14 @@ const Videos = () => {
                         <input
                           type="text"
                           value={editandoVideo.titulo}
-                          onChange={(e) => setEditandoVideo({...editandoVideo, titulo: e.target.value})}
+                          onChange={(e) => setEditandoVideo({ ...editandoVideo, titulo: e.target.value })}
                           className="edit-input"
                           required
                         />
-                        
+
                         <select
                           value={editandoVideo.categoria}
-                          onChange={(e) => setEditandoVideo({...editandoVideo, categoria: e.target.value})}
+                          onChange={(e) => setEditandoVideo({ ...editandoVideo, categoria: e.target.value })}
                           className="edit-select"
                         >
                           {categorias.map(cat => (
@@ -348,22 +343,22 @@ const Videos = () => {
                             </option>
                           ))}
                         </select>
-                        
+
                         <textarea
                           value={editandoVideo.descripcion}
-                          onChange={(e) => setEditandoVideo({...editandoVideo, descripcion: e.target.value})}
+                          onChange={(e) => setEditandoVideo({ ...editandoVideo, descripcion: e.target.value })}
                           className="edit-textarea"
                           rows="3"
                           required
                         />
-                        
+
                         <div className="edit-actions">
                           <button type="submit" className="edit-save-btn">
                             <FaSave style={{ marginRight: '4px' }} />
                             Guardar
                           </button>
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="edit-cancel-btn"
                             onClick={cancelarEdicion}
                           >
@@ -377,7 +372,7 @@ const Videos = () => {
                     <>
                       <div className="admin-video-info">
                         <div className="video-thumb-admin">
-                          <img 
+                          <img
                             src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`}
                             alt={video.titulo}
                           />
@@ -385,7 +380,7 @@ const Videos = () => {
                         <div className="video-details-admin">
                           <h4>{video.titulo}</h4>
                           <p className="video-category-admin">
-                            <span 
+                            <span
                               className="category-dot"
                               style={{ backgroundColor: categorias.find(c => c.valor === video.categoria)?.color }}
                             ></span>
@@ -404,14 +399,14 @@ const Videos = () => {
                         </div>
                       </div>
                       <div className="admin-video-actions">
-                        <button 
+                        <button
                           className="action-btn edit-btn"
                           onClick={() => iniciarEdicion(video)}
                         >
                           <FaEdit style={{ marginRight: '4px' }} />
                           Editar
                         </button>
-                        <button 
+                        <button
                           className="action-btn delete-btn"
                           onClick={() => handleEliminarVideo(video._id)}
                         >
@@ -428,7 +423,6 @@ const Videos = () => {
         </div>
       )}
 
-      {/* Filtros y búsqueda */}
       <div className="filters-section">
         <div className="search-container">
           <FaSearch className="search-icon" />
@@ -440,7 +434,7 @@ const Videos = () => {
             className="search-input"
           />
           {filtros.busqueda && (
-            <button 
+            <button
               className="clear-search"
               onClick={() => setFiltros({ ...filtros, busqueda: '' })}
             >
@@ -448,7 +442,7 @@ const Videos = () => {
             </button>
           )}
         </div>
-        
+
         <div className="category-filters">
           <button
             className={`category-filter-btn ${filtros.categoria === '' ? 'active' : ''}`}
@@ -467,7 +461,7 @@ const Videos = () => {
                 color: filtros.categoria === cat.valor ? cat.color : '#64748b'
               }}
             >
-              <span 
+              <span
                 className="filter-category-dot"
                 style={{ backgroundColor: cat.color }}
               ></span>
@@ -477,11 +471,10 @@ const Videos = () => {
         </div>
       </div>
 
-      {/* Video Player (si hay video seleccionado) */}
       {videoActual && (
         <div className="video-player-container">
           <div className="video-player-header">
-            <button 
+            <button
               className="close-player-btn"
               onClick={() => setVideoActual(null)}
             >
@@ -490,7 +483,7 @@ const Videos = () => {
             </button>
             <h2 className="player-title">{videoActual.titulo}</h2>
           </div>
-          
+
           <div className="video-wrapper">
             <div className="video-embed">
               <iframe
@@ -501,13 +494,13 @@ const Videos = () => {
                 allowFullScreen
               ></iframe>
             </div>
-            
+
             <div className="video-details">
               <div className="video-meta">
                 <div className="video-category-player">
-                  <span 
+                  <span
                     className="category-badge-player"
-                    style={{ 
+                    style={{
                       backgroundColor: categorias.find(c => c.valor === videoActual.categoria)?.color + '20',
                       color: categorias.find(c => c.valor === videoActual.categoria)?.color,
                       borderColor: categorias.find(c => c.valor === videoActual.categoria)?.color
@@ -522,8 +515,8 @@ const Videos = () => {
                     </span>
                   </div>
                 </div>
-                
-                <button 
+
+                <button
                   className={`like-btn-player ${liked.has(videoActual._id) ? 'liked' : ''}`}
                   onClick={() => handleLike(videoActual._id)}
                 >
@@ -538,7 +531,7 @@ const Videos = () => {
                   <span className="like-count">{videoActual.likes || 0}</span>
                 </button>
               </div>
-              
+
               <div className="video-description">
                 <h3>Descripción</h3>
                 <p>{videoActual.descripcion}</p>
@@ -548,7 +541,6 @@ const Videos = () => {
         </div>
       )}
 
-      {/* Grid de Videos */}
       <div className="videos-grid">
         {loading ? (
           <div className="loading-container">
@@ -563,13 +555,13 @@ const Videos = () => {
           </div>
         ) : (
           videosFiltrados.map(video => (
-            <div 
-              key={video._id} 
+            <div
+              key={video._id}
               className="video-card"
               onClick={() => handleVideoClick(video)}
             >
               <div className="video-thumbnail">
-                <img 
+                <img
                   src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`}
                   alt={video.titulo}
                   loading="lazy"
@@ -582,18 +574,18 @@ const Videos = () => {
                     {Math.floor(video.duracion / 60)}:{(video.duracion % 60).toString().padStart(2, '0')}
                   </div>
                 </div>
-                <div 
+                <div
                   className="video-category-indicator"
                   style={{ backgroundColor: categorias.find(c => c.valor === video.categoria)?.color }}
                 ></div>
               </div>
-              
+
               <div className="video-card-content">
                 <h3 className="video-title">{video.titulo}</h3>
                 <p className="video-description-preview">
                   {video.descripcion.substring(0, 100)}...
                 </p>
-                
+
                 <div className="video-card-footer">
                   <div className="video-stats-card">
                     <span className="stat">
@@ -605,10 +597,10 @@ const Videos = () => {
                       <span className="stat-number">{video.likes || 0}</span>
                     </span>
                   </div>
-                  
-                  <div 
+
+                  <div
                     className="video-category-badge"
-                    style={{ 
+                    style={{
                       backgroundColor: categorias.find(c => c.valor === video.categoria)?.color + '20',
                       color: categorias.find(c => c.valor === video.categoria)?.color
                     }}
@@ -622,7 +614,6 @@ const Videos = () => {
         )}
       </div>
 
-      {/* Modal de edición */}
       {editandoVideo && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -631,7 +622,7 @@ const Videos = () => {
                 <FaEdit style={{ marginRight: '8px' }} />
                 Editar Video
               </h2>
-              <button 
+              <button
                 className="modal-close"
                 onClick={cancelarEdicion}
               >
@@ -644,16 +635,16 @@ const Videos = () => {
                 <input
                   type="text"
                   value={editandoVideo.titulo}
-                  onChange={(e) => setEditandoVideo({...editandoVideo, titulo: e.target.value})}
+                  onChange={(e) => setEditandoVideo({ ...editandoVideo, titulo: e.target.value })}
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Categoría</label>
                 <select
                   value={editandoVideo.categoria}
-                  onChange={(e) => setEditandoVideo({...editandoVideo, categoria: e.target.value})}
+                  onChange={(e) => setEditandoVideo({ ...editandoVideo, categoria: e.target.value })}
                 >
                   {categorias.map(cat => (
                     <option key={cat.valor} value={cat.valor}>
@@ -662,24 +653,24 @@ const Videos = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div className="form-group">
                 <label>Descripción</label>
                 <textarea
                   value={editandoVideo.descripcion}
-                  onChange={(e) => setEditandoVideo({...editandoVideo, descripcion: e.target.value})}
+                  onChange={(e) => setEditandoVideo({ ...editandoVideo, descripcion: e.target.value })}
                   rows="4"
                   required
                 />
               </div>
-              
+
               <div className="modal-actions">
                 <button type="submit" className="modal-btn primary">
                   <FaSave style={{ marginRight: '8px' }} />
                   Guardar Cambios
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="modal-btn secondary"
                   onClick={cancelarEdicion}
                 >

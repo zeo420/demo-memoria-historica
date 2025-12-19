@@ -1,4 +1,3 @@
-// src/components/Profile.jsx - Con iconos de react-icons
 import React, { useState, useEffect } from 'react';
 import { triviaAPI, userAPI } from '../services/api';
 import './Profile.css';
@@ -35,7 +34,6 @@ const Profile = ({ usuario, onUpdate }) => {
 
   const generarGradienteAleatorio = () => {
     const colores = [
-      // Pastel + Fuerte
       ['#FF3D00', '#FF6B6B'],
       ['#D50000', '#4A00E0'],
       ['#304FFE', '#FF9E00'],
@@ -72,47 +70,6 @@ const Profile = ({ usuario, onUpdate }) => {
       });
     } catch (error) {
       console.error('Error al cargar perfil:', error);
-      // Datos de ejemplo para desarrollo
-      setProfile({
-        _id: '1',
-        nombre: 'Usuario Demo',
-        email: 'demo@example.com',
-        puntos: 1560,
-        nivel: 4,
-        avatar: 'https://ui-avatars.com/api/?name=Usuario+Demo&background=667eea&color=fff',
-        estadisticas: {
-          triviasCompletadas: 24,
-          respuestasCorrectas: 168,
-          respuestasIncorrectas: 72,
-          racha: 8,
-          mejorPorcentaje: 95
-        },
-        medallas: [
-          { tipo: 'nivel', nombre: 'Principiante', fecha: '2024-01-10' },
-          { tipo: 'perfeccion', nombre: 'Perfecto x10', fecha: '2024-01-15' },
-          { tipo: 'experto', nombre: 'Historiador Novato', fecha: '2024-01-20' },
-          { tipo: 'perseverante', nombre: 'Racha de 5', fecha: '2024-02-01' },
-          { tipo: 'maestro', nombre: 'Maestro del Siglo XX', fecha: '2024-02-05' }
-        ]
-      });
-      setRanking([
-        { _id: '1', nombre: 'Usuario Demo', puntos: 1560, nivel: 4, avatar: null },
-        { _id: '2', nombre: 'Historiador Pro', puntos: 2340, nivel: 7, avatar: null },
-        { _id: '3', nombre: 'Ana García', puntos: 1890, nivel: 6, avatar: null },
-        { _id: '4', nombre: 'Carlos Ruiz', puntos: 1670, nivel: 5, avatar: null },
-        { _id: '5', nombre: 'María López', puntos: 1450, nivel: 4, avatar: null },
-        { _id: '6', nombre: 'Pedro Martínez', puntos: 1320, nivel: 4, avatar: null },
-        { _id: '7', nombre: 'Laura Díaz', puntos: 1280, nivel: 4, avatar: null },
-        { _id: '8', nombre: 'Javier Gómez', puntos: 1150, nivel: 3, avatar: null },
-        { _id: '9', nombre: 'Sofía Ramírez', puntos: 980, nivel: 3, avatar: null },
-        { _id: '10', nombre: 'David Castro', puntos: 850, nivel: 2, avatar: null }
-      ]);
-      setHistorial([
-        { _id: '1', fecha: '2024-02-10T14:30:00', porcentajeAcierto: 90, puntosTotales: 150, preguntasRespondidas: 10 },
-        { _id: '2', fecha: '2024-02-08T16:45:00', porcentajeAcierto: 80, puntosTotales: 120, preguntasRespondidas: 10 },
-        { _id: '3', fecha: '2024-02-05T11:20:00', porcentajeAcierto: 70, puntosTotales: 105, preguntasRespondidas: 10 },
-        { _id: '4', fecha: '2024-02-01T09:15:00', porcentajeAcierto: 95, puntosTotales: 142, preguntasRespondidas: 10 }
-      ]);
     } finally {
       setLoading(false);
     }
@@ -134,40 +91,40 @@ const Profile = ({ usuario, onUpdate }) => {
     return (
       <div className="loading">
         {showIntro && (
-            <div className="intro-content">
-              <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
-              <div className="intro-subtitle">
-              </div>
+          <div className="intro-content">
+            <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
+            <div className="intro-subtitle">
+            </div>
 
-              <div className="creative-loader globe-loader">
-                <div className="loader-circle">
-                  <div className="loader-orbit">
-                    <div className="orbit-dot"></div>
-                  </div>
-                  <div className="loader-core">
-                    <div className="core-pulse"></div>
-                  </div>
-                  <div className="loader-connections">
-                    <div className="connection"></div>
-                    <div className="connection"></div>
-                    <div className="connection"></div>
-                    <div className="connection"></div>
-                  </div>
-                  <div className="latitude-line"></div>
-                  <div className="longitude-line"></div>
+            <div className="creative-loader globe-loader">
+              <div className="loader-circle">
+                <div className="loader-orbit">
+                  <div className="orbit-dot"></div>
                 </div>
-                <div className="loader-text">
-                  <span className="text-char">C</span>
-                  <span className="text-char">A</span>
-                  <span className="text-char">R</span>
-                  <span className="text-char">G</span>
-                  <span className="text-char">A</span>
-                  <span className="text-char">N</span>
-                  <span className="text-char">D</span>
-                  <span className="text-char">O</span>
+                <div className="loader-core">
+                  <div className="core-pulse"></div>
                 </div>
+                <div className="loader-connections">
+                  <div className="connection"></div>
+                  <div className="connection"></div>
+                  <div className="connection"></div>
+                  <div className="connection"></div>
+                </div>
+                <div className="latitude-line"></div>
+                <div className="longitude-line"></div>
+              </div>
+              <div className="loader-text">
+                <span className="text-char">C</span>
+                <span className="text-char">A</span>
+                <span className="text-char">R</span>
+                <span className="text-char">G</span>
+                <span className="text-char">A</span>
+                <span className="text-char">N</span>
+                <span className="text-char">D</span>
+                <span className="text-char">O</span>
               </div>
             </div>
+          </div>
         )}
       </div>
     );
@@ -216,7 +173,6 @@ const Profile = ({ usuario, onUpdate }) => {
 
   return (
     <div className="profile-compact">
-      {/* Header compacto */}
       <div className="profile-header-compact">
         <h1 className="profile-title">
           <FaUser style={{ marginRight: '12px', verticalAlign: 'middle' }} />
@@ -239,7 +195,6 @@ const Profile = ({ usuario, onUpdate }) => {
       </div>
 
       <div className="profile-layout">
-        {/* Columna izquierda - Información del usuario */}
         <div className="profile-left">
           <div className="user-card-compact">
             <div className="user-header">
@@ -299,7 +254,6 @@ const Profile = ({ usuario, onUpdate }) => {
               )}
             </div>
 
-            {/* Progreso compacto */}
             <div className="progress-compact">
               <div className="progress-info">
                 <span className="progress-label">Progreso al Nivel {profile.nivel + 1}</span>
@@ -314,7 +268,6 @@ const Profile = ({ usuario, onUpdate }) => {
             </div>
           </div>
 
-          {/* Tabs de navegación */}
           <div className="tabs-compact">
             <button
               className={`tab-btn ${vistaActual === 'estadisticas' ? 'active' : ''}`}
@@ -341,7 +294,6 @@ const Profile = ({ usuario, onUpdate }) => {
             </button>
           </div>
 
-          {/* Contenido según tab seleccionado */}
           <div className="tab-content">
             {vistaActual === 'estadisticas' && (
               <div className="stats-compact">
@@ -494,7 +446,6 @@ const Profile = ({ usuario, onUpdate }) => {
           </div>
         </div>
 
-        {/* Columna derecha - Ranking */}
         <div className="profile-right">
           <div className="ranking-card-compact">
             <div className="ranking-header">
@@ -545,7 +496,6 @@ const Profile = ({ usuario, onUpdate }) => {
             </div>
           </div>
 
-          {/* Stats resumen */}
           <div className="summary-card">
             <h3 className="summary-title">
               <FaChartLine style={{ marginRight: '8px', verticalAlign: 'middle' }} />

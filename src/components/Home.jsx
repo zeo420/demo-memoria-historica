@@ -11,9 +11,7 @@ import {
 const Home = () => {
   const [activeEffect, setActiveEffect] = useState('none');
   const [showIntro, setShowIntro] = useState(true);
-
   const containerRef = useRef(null);
-  const [particles, setParticles] = useState([]);
 
   // Efectos interactivos disponibles
   const effects = [
@@ -23,22 +21,8 @@ const Home = () => {
     { id: 'quiz', label: 'Test de conocimiento' }
   ];
 
-  // Crear partículas para el fondo
-  useEffect(() => {
-    const newParticles = Array.from({ length: 15 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 4 + 2,
-      speed: Math.random() * 2 + 0.5,
-      delay: Math.random() * 5
-    }));
-    setParticles(newParticles);
-  }, []);
-
   return (
     <div className="history-platform" ref={containerRef}>
-      {/* Overlay introductorio con múltiples loaders */}
       {showIntro && (
         <div className="intro-overlay">
           <div className="intro-content">
@@ -50,34 +34,33 @@ const Home = () => {
             </div>
 
             <div className="creative-loader timeline-loader">
-                  <div className="timeline-track">
-                    <div className="timeline-line">
-                      <div className="timeline-progress"></div>
-                    </div>
-                    <div className="time-marker marker-1">600</div>
-                    <div className="time-marker marker-2">1280</div>
-                    <div className="time-marker marker-3">1854</div>
-                    <div className="time-marker marker-4">2000</div>
-                    <div className="time-marker marker-5">2025</div>
-                    <div className="historical-event event-1">
-                      <div className="event-dot"></div>
-                      <div className="event-label">Conflicto</div>
-                    </div>
-                    <div className="historical-event event-2">
-                      <div className="event-dot"></div>
-                      <div className="event-label">Paz</div>
-                    </div>
-                    <div className="historical-event event-3">
-                      <div className="event-dot"></div>
-                      <div className="event-label">Memoria</div>
-                    </div>
-                  </div>
-                  <div className="loader-text">
-                    Reconstruyendo la línea temporal
-                  </div>
+              <div className="timeline-track">
+                <div className="timeline-line">
+                  <div className="timeline-progress"></div>
                 </div>
+                <div className="time-marker marker-1">600</div>
+                <div className="time-marker marker-2">1280</div>
+                <div className="time-marker marker-3">1854</div>
+                <div className="time-marker marker-4">2000</div>
+                <div className="time-marker marker-5">2025</div>
+                <div className="historical-event event-1">
+                  <div className="event-dot"></div>
+                  <div className="event-label">Conflicto</div>
+                </div>
+                <div className="historical-event event-2">
+                  <div className="event-dot"></div>
+                  <div className="event-label">Paz</div>
+                </div>
+                <div className="historical-event event-3">
+                  <div className="event-dot"></div>
+                  <div className="event-label">Memoria</div>
+                </div>
+              </div>
+              <div className="loader-text">
+                Reconstruyendo la línea temporal
+              </div>
+            </div>
 
-            {/* Texto adicional */}
             <div className="intro-quote">
               "La historia no es lo que pasó, es lo que recordamos"
             </div>
@@ -85,7 +68,6 @@ const Home = () => {
         </div>
       )}
 
-      {/* Sección de actividades interactivas */}
       <section className="activities-section">
         <h3 className="section-title">Elige tu forma de explorar</h3>
 

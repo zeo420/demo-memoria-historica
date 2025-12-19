@@ -1,4 +1,3 @@
-// src/components/Timeline.jsx
 import React, { useState, useMemo, useEffect } from 'react';
 import { eventos } from '../data/historiaColombia';
 import { motion } from 'framer-motion';
@@ -25,12 +24,12 @@ const iconoPorEvento = (titulo) => {
 };
 
 const Timeline = () => {
-  // 🔹 Obtener años mínimo y máximo
+  // Obtener años mínimo y máximo
   const years = eventos.map(e => parseInt(e.fecha.split('-')[0]));
   const minYear = Math.min(...years);
   const maxYear = Math.max(...years);
 
-  // 🔹 Estados del filtro
+  // Estados del filtro
   const [desde, setDesde] = useState(minYear);
   const [hasta, setHasta] = useState(maxYear);
   const [busqueda, setBusqueda] = useState('');
@@ -38,30 +37,30 @@ const Timeline = () => {
   const [eventosPorPagina] = useState(4);
   const [paginaActual, setPaginaActual] = useState(0);
 
-  // 🔹 Filtrar eventos por rango y búsqueda
+  // Filtrar eventos por rango y búsqueda
   const eventosFiltrados = useMemo(() => {
     return eventos
       .filter(ev => {
         const year = parseInt(ev.fecha.split('-')[0]);
         const enRango = year >= desde && year <= hasta;
-        const coincideBusqueda = 
-          busqueda === '' || 
+        const coincideBusqueda =
+          busqueda === '' ||
           ev.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
           ev.descripcion.toLowerCase().includes(busqueda.toLowerCase());
-        
+
         return enRango && coincideBusqueda;
       })
       .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
   }, [desde, hasta, busqueda]);
 
-  // 🔹 Paginación
+  // Paginación
   const totalPaginas = Math.ceil(eventosFiltrados.length / eventosPorPagina);
   const eventosPaginados = eventosFiltrados.slice(
     paginaActual * eventosPorPagina,
     (paginaActual + 1) * eventosPorPagina
   );
 
-  // 🔹 Actualizar página cuando cambia el filtro
+  // Actualizar página cuando cambia el filtro
   useEffect(() => {
     setPaginaActual(0);
   }, [desde, hasta, busqueda]);
@@ -99,7 +98,7 @@ const Timeline = () => {
   };
 
   return (
-    
+
     <div >
       <h2 style={{
         textAlign: 'center',
@@ -113,7 +112,6 @@ const Timeline = () => {
         Línea de Tiempo Histórica Colombiana
       </h2>
 
-      {/* 🎯 FILTRO MEJORADO */}
       <div style={{
         maxWidth: '800px',
         margin: '0 auto 2rem',
@@ -122,7 +120,6 @@ const Timeline = () => {
         borderRadius: '15px',
         boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
       }}>
-        {/* Botón para mostrar/ocultar filtro */}
         <button
           onClick={() => setShowFilter(!showFilter)}
           style={{
@@ -143,7 +140,6 @@ const Timeline = () => {
 
         {showFilter && (
           <>
-            {/* Barra de búsqueda */}
             <div style={{ marginBottom: '1.5rem' }}>
               <input
                 type="text"
@@ -160,7 +156,6 @@ const Timeline = () => {
               />
             </div>
 
-            {/* Rango de años con slider */}
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{
                 display: 'flex',
@@ -188,7 +183,6 @@ const Timeline = () => {
                 </button>
               </div>
 
-              {/* Slider doble */}
               <div style={{ position: 'relative', padding: '0.5rem 0' }}>
                 <div style={{
                   height: '6px',
@@ -239,7 +233,6 @@ const Timeline = () => {
                   }}
                 />
 
-                {/* Indicadores */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -253,7 +246,6 @@ const Timeline = () => {
                 </div>
               </div>
 
-              {/* Controles numéricos */}
               <div style={{
                 display: 'flex',
                 gap: '1rem',
@@ -300,7 +292,6 @@ const Timeline = () => {
           </>
         )}
 
-        {/* Estadísticas */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -319,9 +310,7 @@ const Timeline = () => {
         </div>
       </div>
 
-      {/* 📜 TIMELINE CON PAGINACIÓN */}
       <div>
-        {/* Controles de paginación */}
         {eventosFiltrados.length > eventosPorPagina && (
           <div style={{
             display: 'flex',
@@ -394,7 +383,6 @@ const Timeline = () => {
           </div>
         )}
 
-        {/* Eventos */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',

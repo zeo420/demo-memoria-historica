@@ -1,4 +1,3 @@
-/* src/components/Mapas.css */
 .mapas-container {
   width: 100%;
   height: 100vh;
@@ -8,7 +7,6 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 }
 
-/* Header minimalista */
 .mapas-header {
   background: white;
   padding: 15px 30px;

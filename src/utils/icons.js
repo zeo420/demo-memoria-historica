@@ -1,4 +1,3 @@
-// src/utils/icons.js
 import {
   // General
   FaUser, FaTrophy, FaStar, FaBullseye, FaEdit, FaChartBar,
