@@ -385,10 +385,6 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
               <FaRedo style={{ marginRight: '8px' }} />
               Nueva Trivia
             </button>
-            <button className="btn-secundario" onClick={() => window.location.href = '/dashboard'}>
-              <MdBarChart style={{ marginRight: '8px' }} />
-              Ver Dashboard
-            </button>
           </div>
         </div>
       </div>

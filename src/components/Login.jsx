@@ -836,7 +836,7 @@ const Login = ({ onLogin }) => {
 
         .logo-icon {
           font-size: 3em;
-          color: #ffcc00;
+          color: #ff0000ff;
           filter: drop-shadow(0 4px 6px rgba(255, 204, 0, 0.3));
         }
 

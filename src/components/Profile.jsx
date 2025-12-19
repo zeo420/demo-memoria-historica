@@ -31,9 +31,28 @@ const Profile = ({ usuario, onUpdate }) => {
   const [loading, setLoading] = useState(true);
   const [vistaActual, setVistaActual] = useState('estadisticas');
   const [showIntro, setShowIntro] = useState(true);
+  const [avatarGradient, setAvatarGradient] = useState('');
+
+  const generarGradienteAleatorio = () => {
+    const colores = [
+      // Pastel + Fuerte
+      ['#FF3D00', '#FF6B6B'],
+      ['#D50000', '#4A00E0'],
+      ['#304FFE', '#FF9E00'],
+      ['#C51162', '#000000ff'],
+      ['#6200EA', '#00B4D8'],
+      ['#00C853', '#FF005C'],
+      ['#FF9100', '#2E7D32'],
+      ['#7c1900ff', '#0044ffff'],
+      ['#5D4037', '#9C27B0'],
+    ];
+    const colorAleatorio = colores[Math.floor(Math.random() * colores.length)];
+    return `linear-gradient(135deg, ${colorAleatorio[0]}, ${colorAleatorio[1]})`;
+  };
 
   useEffect(() => {
     loadProfileData();
+    setAvatarGradient(generarGradienteAleatorio());
   }, []);
 
   const loadProfileData = async () => {
@@ -115,7 +134,6 @@ const Profile = ({ usuario, onUpdate }) => {
     return (
       <div className="loading">
         {showIntro && (
-          <div className="intro-overlay">
             <div className="intro-content">
               <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
               <div className="intro-subtitle">
@@ -150,7 +168,6 @@ const Profile = ({ usuario, onUpdate }) => {
                 </div>
               </div>
             </div>
-          </div>
         )}
       </div>
     );
@@ -188,6 +205,15 @@ const Profile = ({ usuario, onUpdate }) => {
     return '#ef4444';
   };
 
+  const obtenerIniciales = (nombre) => {
+    if (!nombre) return 'U';
+    const partes = nombre.trim().split(' ');
+    if (partes.length >= 2) {
+      return (partes[0][0] + partes[1][0]).toUpperCase();
+    }
+    return nombre[0].toUpperCase();
+  };
+
   return (
     <div className="profile-compact">
       {/* Header compacto */}
@@ -218,23 +244,27 @@ const Profile = ({ usuario, onUpdate }) => {
           <div className="user-card-compact">
             <div className="user-header">
               <div className="avatar-container">
-                {profile.avatar ? (
-                  <img src={profile.avatar} alt={profile.nombre} className="user-avatar" />
-                ) : (
-                  <div className="avatar-placeholder">
-                    {profile.nombre.charAt(0).toUpperCase()}
+                {profile.avatar = (
+                  <div
+                    className="avatar-circle-gradient avatar-circle-gradient1"
+                    style={{ background: avatarGradient }}
+                    onClick={() => setAvatarGradient(generarGradienteAleatorio())}
+                  >
+                    <span className="avatar-initials">
+                      {obtenerIniciales(profile.nombre)}
+                    </span>
                   </div>
                 )}
                 <div className="level-badge-compact">
                   <span className="level-number">{profile.nivel}</span>
                 </div>
               </div>
-              
+
               {!editMode ? (
                 <div className="user-info">
                   <h2 className="user-name">{profile.nombre}</h2>
                   <p className="user-email">{profile.email}</p>
-                  <button 
+                  <button
                     className="edit-profile-btn"
                     onClick={() => setEditMode(true)}
                   >
@@ -247,7 +277,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   <input
                     type="text"
                     value={formData.nombre}
-                    onChange={(e) => setFormData({...formData, nombre: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                     placeholder="Nombre"
                     className="edit-input"
                   />
@@ -256,8 +286,8 @@ const Profile = ({ usuario, onUpdate }) => {
                       <FaSave style={{ marginRight: '4px' }} />
                       Guardar
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="cancel-btn-compact"
                       onClick={() => setEditMode(false)}
                     >
@@ -276,7 +306,7 @@ const Profile = ({ usuario, onUpdate }) => {
                 <span className="progress-numbers">{progresoPuntos}/{totalParaNivel}</span>
               </div>
               <div className="progress-bar-compact">
-                <div 
+                <div
                   className="progress-fill-compact"
                   style={{ width: `${porcentajeProgreso}%` }}
                 />
@@ -286,14 +316,14 @@ const Profile = ({ usuario, onUpdate }) => {
 
           {/* Tabs de navegación */}
           <div className="tabs-compact">
-            <button 
+            <button
               className={`tab-btn ${vistaActual === 'estadisticas' ? 'active' : ''}`}
               onClick={() => setVistaActual('estadisticas')}
             >
               <MdBarChart className="tab-icon" />
               <span className="tab-text">Estadísticas</span>
             </button>
-            <button 
+            <button
               className={`tab-btn ${vistaActual === 'medallas' ? 'active' : ''}`}
               onClick={() => setVistaActual('medallas')}
             >
@@ -301,7 +331,7 @@ const Profile = ({ usuario, onUpdate }) => {
               <span className="tab-text">Medallas</span>
               <span className="tab-badge">{profile.medallas.length}</span>
             </button>
-            <button 
+            <button
               className={`tab-btn ${vistaActual === 'historial' ? 'active' : ''}`}
               onClick={() => setVistaActual('historial')}
             >
@@ -323,7 +353,7 @@ const Profile = ({ usuario, onUpdate }) => {
                       <div className="stat-card-label">Trivias</div>
                     </div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <FaCheckCircle className="stat-card-icon" />
                     <div className="stat-card-content">
@@ -331,33 +361,35 @@ const Profile = ({ usuario, onUpdate }) => {
                       <div className="stat-card-label">Correctas</div>
                     </div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <MdTrendingUp className="stat-card-icon" />
                     <div className="stat-card-content">
-                      <div className="stat-card-value" style={{ color: getColorPorcentaje(
-                        profile.estadisticas.respuestasCorrectas > 0
-                          ? Math.round(
+                      <div className="stat-card-value" style={{
+                        color: getColorPorcentaje(
+                          profile.estadisticas.respuestasCorrectas > 0
+                            ? Math.round(
                               (profile.estadisticas.respuestasCorrectas /
                                 (profile.estadisticas.respuestasCorrectas +
                                   profile.estadisticas.respuestasIncorrectas)) *
-                                100
+                              100
                             )
-                          : 0
-                      ) }}>
+                            : 0
+                        )
+                      }}>
                         {profile.estadisticas.respuestasCorrectas > 0
                           ? Math.round(
-                              (profile.estadisticas.respuestasCorrectas /
-                                (profile.estadisticas.respuestasCorrectas +
-                                  profile.estadisticas.respuestasIncorrectas)) *
-                                100
-                            )
+                            (profile.estadisticas.respuestasCorrectas /
+                              (profile.estadisticas.respuestasCorrectas +
+                                profile.estadisticas.respuestasIncorrectas)) *
+                            100
+                          )
                           : 0}%
                       </div>
                       <div className="stat-card-label">Acierto</div>
                     </div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <FaFire className="stat-card-icon" />
                     <div className="stat-card-content">
@@ -365,7 +397,7 @@ const Profile = ({ usuario, onUpdate }) => {
                       <div className="stat-card-label">Racha</div>
                     </div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <FaCheckCircle className="stat-card-icon" style={{ fontSize: '2em' }} />
                     <div className="stat-card-content">
@@ -375,7 +407,7 @@ const Profile = ({ usuario, onUpdate }) => {
                       <div className="stat-card-label">Mejor</div>
                     </div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <FaClock className="stat-card-icon" />
                     <div className="stat-card-content">
@@ -431,7 +463,7 @@ const Profile = ({ usuario, onUpdate }) => {
                         <div className="history-item-stats">
                           <div className="history-stat">
                             <span className="history-stat-label">Precisión</span>
-                            <span 
+                            <span
                               className="history-stat-value"
                               style={{ color: getColorPorcentaje(item.porcentajeAcierto) }}
                             >
@@ -475,11 +507,11 @@ const Profile = ({ usuario, onUpdate }) => {
                 <span className="position-value">#{userRank}</span>
               </div>
             </div>
-            
+
             <div className="ranking-list-compact">
               {ranking.slice(0, 10).map((user, idx) => (
-                <div 
-                  key={user._id} 
+                <div
+                  key={user._id}
                   className={`ranking-item-compact ${user._id === profile._id ? 'current' : ''}`}
                 >
                   <div className="rank-position">
@@ -487,23 +519,23 @@ const Profile = ({ usuario, onUpdate }) => {
                       {idx + 1}
                     </span>
                   </div>
-                  
+
                   <div className="rank-user">
-                    <div className="rank-avatar-compact">
-                      {user.avatar ? (
-                        <img src={user.avatar} alt={user.nombre} />
-                      ) : (
-                        <span className="rank-avatar-initial">
-                          {user.nombre.charAt(0).toUpperCase()}
-                        </span>
-                      )}
+                    <div
+                      className="avatar-circle-gradient"
+                      style={{ background: avatarGradient }}
+                      onClick={() => setAvatarGradient(generarGradienteAleatorio())}
+                    >
+                      <span className="avatar-initials">
+                        {obtenerIniciales(profile.nombre)}
+                      </span>
                     </div>
                     <div className="rank-info">
                       <span className="rank-name">{user.nombre}</span>
                       <span className="rank-level">Nv.{user.nivel}</span>
                     </div>
                   </div>
-                  
+
                   <div className="rank-points">
                     <span className="points-value">{user.puntos}</span>
                     <span className="points-label">pts</span>

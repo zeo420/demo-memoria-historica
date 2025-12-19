@@ -99,6 +99,7 @@ const Timeline = () => {
   };
 
   return (
+    
     <div >
       <h2 style={{
         textAlign: 'center',
@@ -108,7 +109,7 @@ const Timeline = () => {
         alignItems: 'center',
         gap: '0.5rem'
       }}>
-        <FaCompass color="#a70000ff" />
+        <FaCompass color="#2c3e50" />
         Línea de Tiempo Histórica Colombiana
       </h2>
 
@@ -200,7 +201,7 @@ const Timeline = () => {
                     left: `${((desde - minYear) / (maxYear - minYear)) * 100}%`,
                     right: `${100 - ((hasta - minYear) / (maxYear - minYear)) * 100}%`,
                     height: '100%',
-                    background: '#a70000ff',
+                    background: 'linear-gradient(135deg, #09008aff 0%, #a70000ff 100%)',
                     borderRadius: '3px'
                   }} />
                 </div>

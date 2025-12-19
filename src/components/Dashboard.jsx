@@ -48,39 +48,37 @@ const Dashboard = ({ usuario }) => {
     return (
       <div className="loading">
         {showIntro && (
-          <div className="intro-overlay">
-            <div className="intro-content">
-              <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
-              <div className="intro-subtitle">
-              </div>
+          <div className="intro-content">
+            <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
+            <div className="intro-subtitle">
+            </div>
 
-              <div className="creative-loader globe-loader">
-                <div className="loader-circle">
-                  <div className="loader-orbit">
-                    <div className="orbit-dot"></div>
-                  </div>
-                  <div className="loader-core">
-                    <div className="core-pulse"></div>
-                  </div>
-                  <div className="loader-connections">
-                    <div className="connection"></div>
-                    <div className="connection"></div>
-                    <div className="connection"></div>
-                    <div className="connection"></div>
-                  </div>
-                  <div className="latitude-line"></div>
-                  <div className="longitude-line"></div>
+            <div className="creative-loader globe-loader">
+              <div className="loader-circle">
+                <div className="loader-orbit">
+                  <div className="orbit-dot"></div>
                 </div>
-                <div className="loader-text">
-                  <span className="text-char">C</span>
-                  <span className="text-char">A</span>
-                  <span className="text-char">R</span>
-                  <span className="text-char">G</span>
-                  <span className="text-char">A</span>
-                  <span className="text-char">N</span>
-                  <span className="text-char">D</span>
-                  <span className="text-char">O</span>
+                <div className="loader-core">
+                  <div className="core-pulse"></div>
                 </div>
+                <div className="loader-connections">
+                  <div className="connection"></div>
+                  <div className="connection"></div>
+                  <div className="connection"></div>
+                  <div className="connection"></div>
+                </div>
+                <div className="latitude-line"></div>
+                <div className="longitude-line"></div>
+              </div>
+              <div className="loader-text">
+                <span className="text-char">C</span>
+                <span className="text-char">A</span>
+                <span className="text-char">R</span>
+                <span className="text-char">G</span>
+                <span className="text-char">A</span>
+                <span className="text-char">N</span>
+                <span className="text-char">D</span>
+                <span className="text-char">O</span>
               </div>
             </div>
           </div>
@@ -106,53 +104,56 @@ const Dashboard = ({ usuario }) => {
 
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>
-          <FaChartBar style={{ marginRight: '12px', verticalAlign: 'middle' }} />
-          Mi Dashboard
-        </h1>
-        <p>Resumen de tu progreso y estadísticas</p>
-      </div>
-
-      {/* Tarjetas de resumen */}
-      <div className="stats-summary">
-        <div className="summary-card">
-          <div className="summary-icon">
-            <FaBullseye style={{ fontSize: '2em', color: 'white' }} />
-          </div>
-          <div className="summary-info">
-            <span className="summary-value">{estadisticas.triviasCompletadas}</span>
-            <span className="summary-label">Trivias Completadas</span>
-          </div>
+      {/* Contenedor principal para header y stats en la misma fila */}
+      <div className="dashboard-top-section">
+        <div className="dashboard-header">
+          <h1>
+            <FaChartBar style={{ marginRight: '12px', verticalAlign: 'middle' }} />
+            Mi Dashboard
+          </h1>
+          <p>Resumen de tu progreso y estadísticas</p>
         </div>
 
-        <div className="summary-card">
-          <div className="summary-icon">
-            <MdTrendingUp style={{ fontSize: '2em', color: 'white' }} />
+        {/* Tarjetas de resumen */}
+        <div className="stats-summary">
+          <div className="summary-card">
+            <div className="summary-icon">
+              <FaBullseye style={{ fontSize: '2em', color: 'white' }} />
+            </div>
+            <div className="summary-info">
+              <span className="summary-value">{estadisticas.triviasCompletadas}</span>
+              <span className="summary-label">Trivias Completadas</span>
+            </div>
           </div>
-          <div className="summary-info">
-            <span className="summary-value">{promedioAcierto}%</span>
-            <span className="summary-label">Promedio de Acierto</span>
-          </div>
-        </div>
 
-        <div className="summary-card">
-          <div className="summary-icon">
-            <FaStar style={{ fontSize: '2em', color: 'white' }} />
+          <div className="summary-card">
+            <div className="summary-icon">
+              <MdTrendingUp style={{ fontSize: '2em', color: 'white' }} />
+            </div>
+            <div className="summary-info">
+              <span className="summary-value">{promedioAcierto}%</span>
+              <span className="summary-label">Promedio de Acierto</span>
+            </div>
           </div>
-          <div className="summary-info">
-            <span className="summary-value">{totalPuntos}</span>
-            <span className="summary-label">Puntos Totales</span>
-          </div>
-        </div>
 
-        <div className="summary-card">
-          <div className="summary-icon">
-            <FaFire style={{ fontSize: '2em', color: 'white' }} />
+          <div className="summary-card">
+            <div className="summary-icon">
+              <FaStar style={{ fontSize: '2em', color: 'white' }} />
+            </div>
+            <div className="summary-info">
+              <span className="summary-value">{totalPuntos}</span>
+              <span className="summary-label">Puntos Totales</span>
+            </div>
           </div>
-          <div className="summary-info">
-            <span className="summary-value">{estadisticas.racha || 0}</span>
-            <span className="summary-label">Racha Actual</span>
+
+          <div className="summary-card">
+            <div className="summary-icon">
+              <FaFire style={{ fontSize: '2em', color: 'white' }} />
+            </div>
+            <div className="summary-info">
+              <span className="summary-value">{estadisticas.racha || 0}</span>
+              <span className="summary-label">Racha Actual</span>
+            </div>
           </div>
         </div>
       </div>
@@ -309,8 +310,17 @@ const Dashboard = ({ usuario }) => {
           margin: 0 auto;
         }
 
-        .dashboard-header {
+        /* NUEVA SECCIÓN: Contenedor para header y stats en la misma fila */
+        .dashboard-top-section {
+          display: flex;
+          gap: 30px;
           margin-bottom: 30px;
+          align-items: flex-start;
+        }
+
+        .dashboard-header {
+          flex: 1;
+          min-width: 300px;
         }
 
         .dashboard-header h1 {
@@ -326,20 +336,21 @@ const Dashboard = ({ usuario }) => {
         }
 
         .stats-summary {
+          flex: 2;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 20px;
-          margin-bottom: 30px;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 15px;
+          min-width: 0; /* Permite que se ajuste al contenedor */
         }
 
         .summary-card {
           background: white;
           border-radius: 15px;
-          padding: 25px;
+          padding: 20px;
           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: 15px;
           transition: transform 0.3s;
         }
 
@@ -348,29 +359,34 @@ const Dashboard = ({ usuario }) => {
         }
 
         .summary-icon {
-          width: 70px;
-          height: 70px;
+          width: 60px;
+          height: 60px;
           display: flex;
           align-items: center;
           justify-content: center;
           background: linear-gradient(135deg, #2a2a2aff 0%, #2d4dffff 100%);
           border-radius: 15px;
+          flex-shrink: 0;
         }
 
         .summary-info {
           display: flex;
           flex-direction: column;
+          min-width: 0; /* Permite que el texto se ajuste */
         }
 
         .summary-value {
-          font-size: 2em;
+          font-size: 1.8em;
           font-weight: bold;
           color: #333;
+          line-height: 1;
         }
 
         .summary-label {
           color: #666;
-          font-size: 0.9em;
+          font-size: 0.85em;
+          margin-top: 5px;
+          line-height: 1.2;
         }
 
         .dashboard-grid {
@@ -597,9 +613,30 @@ const Dashboard = ({ usuario }) => {
           100% { transform: rotate(360deg); }
         }
 
+        /* Responsive para el nuevo layout */
+        @media (max-width: 1200px) {
+          .dashboard-top-section {
+            flex-direction: column;
+            gap: 20px;
+          }
+          
+          .dashboard-header {
+            min-width: 100%;
+          }
+          
+          .stats-summary {
+            grid-template-columns: repeat(4, 1fr);
+            width: 100%;
+          }
+        }
+
         @media (max-width: 1024px) {
           .dashboard-grid {
             grid-template-columns: 1fr;
+          }
+
+          .stats-summary {
+            grid-template-columns: repeat(2, 1fr);
           }
 
           .history-header, .history-row {
@@ -610,6 +647,23 @@ const Dashboard = ({ usuario }) => {
         }
 
         @media (max-width: 768px) {
+          .stats-summary {
+            grid-template-columns: 1fr;
+          }
+
+          .summary-card {
+            padding: 15px;
+          }
+
+          .summary-icon {
+            width: 50px;
+            height: 50px;
+          }
+
+          .summary-value {
+            font-size: 1.5em;
+          }
+
           .history-header, .history-row {
             grid-template-columns: 1fr;
             text-align: left;
@@ -624,6 +678,22 @@ const Dashboard = ({ usuario }) => {
             content: attr(data-label);
             font-weight: bold;
             color: #666;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .dashboard-top-section {
+            gap: 15px;
+          }
+
+          .summary-card {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+          }
+
+          .summary-info {
+            align-items: center;
           }
         }
       `}</style>
