@@ -1,11 +1,28 @@
-// src/components/Dashboard.jsx - Dashboard actualizado con historial
+// src/components/Dashboard.jsx - Con iconos de react-icons
 import React, { useState, useEffect } from 'react';
 import { triviaAPI, userAPI } from '../services/api';
+import {
+  FaChartBar,
+  FaBullseye,
+  FaStar,
+  FaFire,
+  FaClock,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaTrophy,
+  FaThumbsUp,
+  FaBook
+} from 'react-icons/fa';
+import {
+  MdTrendingUp,
+  MdSchedule
+} from 'react-icons/md';
 
 const Dashboard = ({ usuario }) => {
   const [historial, setHistorial] = useState([]);
   const [estadisticas, setEstadisticas] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     cargarDatos();
@@ -27,7 +44,48 @@ const Dashboard = ({ usuario }) => {
   };
 
   if (loading) {
-    return <div className="loading">Cargando estadísticas...</div>;
+    return (
+      <div className="loading">
+        {showIntro && (
+          <div className="intro-overlay">
+            <div className="intro-content">
+              <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
+              <div className="intro-subtitle">
+              </div>
+
+              <div className="creative-loader globe-loader">
+                <div className="loader-circle">
+                  <div className="loader-orbit">
+                    <div className="orbit-dot"></div>
+                  </div>
+                  <div className="loader-core">
+                    <div className="core-pulse"></div>
+                  </div>
+                  <div className="loader-connections">
+                    <div className="connection"></div>
+                    <div className="connection"></div>
+                    <div className="connection"></div>
+                    <div className="connection"></div>
+                  </div>
+                  <div className="latitude-line"></div>
+                  <div className="longitude-line"></div>
+                </div>
+                <div className="loader-text">
+                  <span className="text-char">C</span>
+                  <span className="text-char">A</span>
+                  <span className="text-char">R</span>
+                  <span className="text-char">G</span>
+                  <span className="text-char">A</span>
+                  <span className="text-char">N</span>
+                  <span className="text-char">D</span>
+                  <span className="text-char">O</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 
   const promedioAcierto = historial.length > 0
@@ -48,14 +106,19 @@ const Dashboard = ({ usuario }) => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>📊 Mi Dashboard</h1>
+        <h1>
+          <FaChartBar style={{ marginRight: '12px', verticalAlign: 'middle' }} />
+          Mi Dashboard
+        </h1>
         <p>Resumen de tu progreso y estadísticas</p>
       </div>
 
       {/* Tarjetas de resumen */}
       <div className="stats-summary">
         <div className="summary-card">
-          <div className="summary-icon">🎯</div>
+          <div className="summary-icon">
+            <FaBullseye style={{ fontSize: '2em', color: 'white' }} />
+          </div>
           <div className="summary-info">
             <span className="summary-value">{estadisticas.triviasCompletadas}</span>
             <span className="summary-label">Trivias Completadas</span>
@@ -63,7 +126,9 @@ const Dashboard = ({ usuario }) => {
         </div>
 
         <div className="summary-card">
-          <div className="summary-icon">📈</div>
+          <div className="summary-icon">
+            <MdTrendingUp style={{ fontSize: '2em', color: 'white' }} />
+          </div>
           <div className="summary-info">
             <span className="summary-value">{promedioAcierto}%</span>
             <span className="summary-label">Promedio de Acierto</span>
@@ -71,7 +136,9 @@ const Dashboard = ({ usuario }) => {
         </div>
 
         <div className="summary-card">
-          <div className="summary-icon">⭐</div>
+          <div className="summary-icon">
+            <FaStar style={{ fontSize: '2em', color: 'white' }} />
+          </div>
           <div className="summary-info">
             <span className="summary-value">{totalPuntos}</span>
             <span className="summary-label">Puntos Totales</span>
@@ -79,7 +146,9 @@ const Dashboard = ({ usuario }) => {
         </div>
 
         <div className="summary-card">
-          <div className="summary-icon">🔥</div>
+          <div className="summary-icon">
+            <FaFire style={{ fontSize: '2em', color: 'white' }} />
+          </div>
           <div className="summary-info">
             <span className="summary-value">{estadisticas.racha || 0}</span>
             <span className="summary-label">Racha Actual</span>
@@ -90,16 +159,19 @@ const Dashboard = ({ usuario }) => {
       {/* Gráfica de progreso */}
       <div className="dashboard-grid">
         <div className="chart-card">
-          <h3>📊 Progreso Reciente</h3>
+          <h3>
+            <FaChartBar style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Progreso Reciente
+          </h3>
           <div className="chart-container">
             {historial.slice(0, 10).reverse().map((item, idx) => (
               <div key={item._id} className="bar-container">
-                <div 
+                <div
                   className="bar"
-                  style={{ 
+                  style={{
                     height: `${item.porcentajeAcierto}%`,
-                    backgroundColor: item.porcentajeAcierto >= 80 ? '#28a745' : 
-                                   item.porcentajeAcierto >= 60 ? '#ffc107' : '#dc3545'
+                    backgroundColor: item.porcentajeAcierto >= 80 ? '#28a745' :
+                      item.porcentajeAcierto >= 60 ? '#ffc107' : '#dc3545'
                   }}
                 >
                   <span className="bar-value">{item.porcentajeAcierto}%</span>
@@ -116,7 +188,10 @@ const Dashboard = ({ usuario }) => {
         </div>
 
         <div className="stats-detailed-card">
-          <h3>📈 Estadísticas Detalladas</h3>
+          <h3>
+            <MdTrendingUp style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Estadísticas Detalladas
+          </h3>
           <div className="detailed-stats">
             <div className="detailed-stat">
               <span className="stat-label">Total de Respuestas</span>
@@ -124,14 +199,20 @@ const Dashboard = ({ usuario }) => {
                 {estadisticas.respuestasCorrectas + estadisticas.respuestasIncorrectas}
               </span>
             </div>
-            
+
             <div className="detailed-stat success">
-              <span className="stat-label">✅ Correctas</span>
+              <span className="stat-label">
+                <FaCheckCircle style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                Correctas
+              </span>
               <span className="stat-value">{estadisticas.respuestasCorrectas}</span>
             </div>
-            
+
             <div className="detailed-stat error">
-              <span className="stat-label">❌ Incorrectas</span>
+              <span className="stat-label">
+                <FaTimesCircle style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                Incorrectas
+              </span>
               <span className="stat-value">{estadisticas.respuestasIncorrectas}</span>
             </div>
 
@@ -140,10 +221,10 @@ const Dashboard = ({ usuario }) => {
               <span className="stat-value">
                 {estadisticas.respuestasCorrectas > 0
                   ? Math.round(
-                      (estadisticas.respuestasCorrectas /
-                        (estadisticas.respuestasCorrectas + estadisticas.respuestasIncorrectas)) *
-                        100
-                    )
+                    (estadisticas.respuestasCorrectas /
+                      (estadisticas.respuestasCorrectas + estadisticas.respuestasIncorrectas)) *
+                    100
+                  )
                   : 0}%
               </span>
             </div>
@@ -156,7 +237,7 @@ const Dashboard = ({ usuario }) => {
             <div className="detailed-stat">
               <span className="stat-label">Peor Resultado</span>
               <span className="stat-value">
-                {historial.length > 0 
+                {historial.length > 0
                   ? Math.min(...historial.map(h => h.porcentajeAcierto))
                   : 0}%
               </span>
@@ -167,7 +248,10 @@ const Dashboard = ({ usuario }) => {
 
       {/* Historial reciente */}
       <div className="recent-history">
-        <h3>🕐 Historial Reciente (Últimas 10 trivias)</h3>
+        <h3>
+          <MdSchedule style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+          Historial Reciente (Últimas 10 trivias)
+        </h3>
         <div className="history-table">
           <div className="history-header">
             <span>#</span>
@@ -181,20 +265,32 @@ const Dashboard = ({ usuario }) => {
             <div key={item._id} className="history-row">
               <span className="history-number">{historial.length - idx}</span>
               <span className="history-date">{formatearFecha(item.fecha)}</span>
-              <span className={`history-percentage ${
-                item.porcentajeAcierto >= 80 ? 'excelente' : 
+              <span className={`history-percentage ${item.porcentajeAcierto >= 80 ? 'excelente' :
                 item.porcentajeAcierto >= 60 ? 'bueno' : 'regular'
-              }`}>
+                }`}>
                 {item.porcentajeAcierto}%
               </span>
               <span className="history-points">+{item.puntosTotales}</span>
               <span className="history-questions">{item.preguntasRespondidas.length}</span>
-              <span className={`history-status ${
-                item.porcentajeAcierto >= 80 ? 'excelente' : 
+              <span className={`history-status ${item.porcentajeAcierto >= 80 ? 'excelente' :
                 item.porcentajeAcierto >= 60 ? 'bueno' : 'regular'
-              }`}>
-                {item.porcentajeAcierto >= 80 ? '🏆 Excelente' : 
-                 item.porcentajeAcierto >= 60 ? '👍 Bien' : '📚 Mejorable'}
+                }`}>
+                {item.porcentajeAcierto >= 80 ? (
+                  <>
+                    <FaTrophy style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                    Excelente
+                  </>
+                ) : item.porcentajeAcierto >= 60 ? (
+                  <>
+                    <FaThumbsUp style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                    Bien
+                  </>
+                ) : (
+                  <>
+                    <FaBook style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                    Mejorable
+                  </>
+                )}
               </span>
             </div>
           ))}
@@ -210,7 +306,6 @@ const Dashboard = ({ usuario }) => {
         .dashboard-container {
           max-width: 1400px;
           margin: 0 auto;
-          padding: 20px;
         }
 
         .dashboard-header {
@@ -218,9 +313,10 @@ const Dashboard = ({ usuario }) => {
         }
 
         .dashboard-header h1 {
-          font-size: 2.5em;
           color: #333;
           margin-bottom: 10px;
+          display: flex;
+          align-items: center;
         }
 
         .dashboard-header p {
@@ -251,13 +347,12 @@ const Dashboard = ({ usuario }) => {
         }
 
         .summary-icon {
-          font-size: 3em;
           width: 70px;
           height: 70px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #2a2a2aff 0%, #2d4dffff 100%);
           border-radius: 15px;
         }
 
@@ -294,6 +389,8 @@ const Dashboard = ({ usuario }) => {
         .chart-card h3, .stats-detailed-card h3, .recent-history h3 {
           margin: 0 0 20px 0;
           color: #333;
+          display: flex;
+          align-items: center;
         }
 
         .chart-container {
@@ -365,6 +462,8 @@ const Dashboard = ({ usuario }) => {
         .detailed-stat .stat-label {
           color: #666;
           font-size: 0.95em;
+          display: flex;
+          align-items: center;
         }
 
         .detailed-stat .stat-value {
@@ -444,6 +543,10 @@ const Dashboard = ({ usuario }) => {
           font-size: 0.85em;
           font-weight: 600;
           text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
         }
 
         .history-status.excelente {
@@ -473,6 +576,24 @@ const Dashboard = ({ usuario }) => {
           padding: 60px;
           font-size: 1.2em;
           color: #666;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #667eea;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 1024px) {

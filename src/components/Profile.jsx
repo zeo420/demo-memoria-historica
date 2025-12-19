@@ -1,7 +1,26 @@
-// src/components/Profile.jsx - Versión Compacta y Mejorada
+// src/components/Profile.jsx - Con iconos de react-icons
 import React, { useState, useEffect } from 'react';
 import { triviaAPI, userAPI } from '../services/api';
 import './Profile.css';
+import {
+  FaUser,
+  FaTrophy,
+  FaStar,
+  FaBullseye,
+  FaEdit,
+  FaSave,
+  FaTimes,
+  FaCheckCircle,
+  FaFire,
+  FaClock,
+  FaChartLine,
+  FaMedal,
+  FaScroll
+} from 'react-icons/fa';
+import {
+  MdTrendingUp,
+  MdBarChart
+} from 'react-icons/md';
 
 const Profile = ({ usuario, onUpdate }) => {
   const [profile, setProfile] = useState(null);
@@ -11,6 +30,7 @@ const Profile = ({ usuario, onUpdate }) => {
   const [formData, setFormData] = useState({ nombre: '', avatar: '' });
   const [loading, setLoading] = useState(true);
   const [vistaActual, setVistaActual] = useState('estadisticas');
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     loadProfileData();
@@ -92,9 +112,45 @@ const Profile = ({ usuario, onUpdate }) => {
 
   if (loading || !profile) {
     return (
-      <div className="profile-loading">
-        <div className="loading-spinner"></div>
-        <p>Cargando perfil...</p>
+      <div className="loading">
+        {showIntro && (
+          <div className="intro-overlay">
+            <div className="intro-content">
+              <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
+              <div className="intro-subtitle">
+              </div>
+
+              <div className="creative-loader globe-loader">
+                <div className="loader-circle">
+                  <div className="loader-orbit">
+                    <div className="orbit-dot"></div>
+                  </div>
+                  <div className="loader-core">
+                    <div className="core-pulse"></div>
+                  </div>
+                  <div className="loader-connections">
+                    <div className="connection"></div>
+                    <div className="connection"></div>
+                    <div className="connection"></div>
+                    <div className="connection"></div>
+                  </div>
+                  <div className="latitude-line"></div>
+                  <div className="longitude-line"></div>
+                </div>
+                <div className="loader-text">
+                  <span className="text-char">C</span>
+                  <span className="text-char">A</span>
+                  <span className="text-char">R</span>
+                  <span className="text-char">G</span>
+                  <span className="text-char">A</span>
+                  <span className="text-char">N</span>
+                  <span className="text-char">D</span>
+                  <span className="text-char">O</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -115,14 +171,14 @@ const Profile = ({ usuario, onUpdate }) => {
 
   const getMedallaIcono = (tipo) => {
     const iconos = {
-      nivel: '⭐',
-      perfeccion: '💯',
-      experto: '🎓',
-      perseverante: '🏃',
-      maestro: '👑',
-      racha: '🔥'
+      nivel: <FaStar style={{ color: '#FFD700' }} />,
+      perfeccion: <FaCheckCircle style={{ color: '#10B981' }} />,
+      experto: <FaTrophy style={{ color: '#F59E0B' }} />,
+      perseverante: <FaFire style={{ color: '#EF4444' }} />,
+      maestro: <FaMedal style={{ color: '#8B5CF6' }} />,
+      racha: <FaFire style={{ color: '#F97316' }} />
     };
-    return iconos[tipo.split('_')[0]] || '🏅';
+    return iconos[tipo.split('_')[0]] || <FaMedal style={{ color: '#6B7280' }} />;
   };
 
   const getColorPorcentaje = (porcentaje) => {
@@ -135,18 +191,21 @@ const Profile = ({ usuario, onUpdate }) => {
     <div className="profile-compact">
       {/* Header compacto */}
       <div className="profile-header-compact">
-        <h1 className="profile-title">👤 Mi Perfil</h1>
+        <h1 className="profile-title">
+          <FaUser style={{ marginRight: '12px', verticalAlign: 'middle' }} />
+          Mi Perfil
+        </h1>
         <div className="header-stats">
           <div className="header-stat">
-            <span className="stat-icon">🏆</span>
+            <FaTrophy className="stat-icon" />
             <span className="stat-text">Rank #{userRank}</span>
           </div>
           <div className="header-stat">
-            <span className="stat-icon">⭐</span>
+            <FaStar className="stat-icon" />
             <span className="stat-text">Nivel {profile.nivel}</span>
           </div>
           <div className="header-stat">
-            <span className="stat-icon">🎯</span>
+            <FaBullseye className="stat-icon" />
             <span className="stat-text">{profile.puntos} pts</span>
           </div>
         </div>
@@ -178,7 +237,7 @@ const Profile = ({ usuario, onUpdate }) => {
                     className="edit-profile-btn"
                     onClick={() => setEditMode(true)}
                   >
-                    <span className="edit-icon">✏️</span>
+                    <FaEdit className="edit-icon" />
                     Editar
                   </button>
                 </div>
@@ -193,14 +252,16 @@ const Profile = ({ usuario, onUpdate }) => {
                   />
                   <div className="edit-actions">
                     <button type="submit" className="save-btn-compact">
-                      💾 Guardar
+                      <FaSave style={{ marginRight: '4px' }} />
+                      Guardar
                     </button>
                     <button 
                       type="button" 
                       className="cancel-btn-compact"
                       onClick={() => setEditMode(false)}
                     >
-                      ❌ Cancelar
+                      <FaTimes style={{ marginRight: '4px' }} />
+                      Cancelar
                     </button>
                   </div>
                 </form>
@@ -228,14 +289,14 @@ const Profile = ({ usuario, onUpdate }) => {
               className={`tab-btn ${vistaActual === 'estadisticas' ? 'active' : ''}`}
               onClick={() => setVistaActual('estadisticas')}
             >
-              <span className="tab-icon">📊</span>
+              <MdBarChart className="tab-icon" />
               <span className="tab-text">Estadísticas</span>
             </button>
             <button 
               className={`tab-btn ${vistaActual === 'medallas' ? 'active' : ''}`}
               onClick={() => setVistaActual('medallas')}
             >
-              <span className="tab-icon">🏆</span>
+              <FaTrophy className="tab-icon" />
               <span className="tab-text">Medallas</span>
               <span className="tab-badge">{profile.medallas.length}</span>
             </button>
@@ -243,7 +304,7 @@ const Profile = ({ usuario, onUpdate }) => {
               className={`tab-btn ${vistaActual === 'historial' ? 'active' : ''}`}
               onClick={() => setVistaActual('historial')}
             >
-              <span className="tab-icon">📜</span>
+              <FaScroll className="tab-icon" />
               <span className="tab-text">Historial</span>
               <span className="tab-badge">{historial.length}</span>
             </button>
@@ -255,7 +316,7 @@ const Profile = ({ usuario, onUpdate }) => {
               <div className="stats-compact">
                 <div className="stats-grid-compact">
                   <div className="stat-card">
-                    <div className="stat-card-icon">🎯</div>
+                    <FaBullseye className="stat-card-icon" />
                     <div className="stat-card-content">
                       <div className="stat-card-value">{profile.estadisticas.triviasCompletadas}</div>
                       <div className="stat-card-label">Trivias</div>
@@ -263,7 +324,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
                   
                   <div className="stat-card">
-                    <div className="stat-card-icon">✅</div>
+                    <FaCheckCircle className="stat-card-icon" />
                     <div className="stat-card-content">
                       <div className="stat-card-value">{profile.estadisticas.respuestasCorrectas}</div>
                       <div className="stat-card-label">Correctas</div>
@@ -271,7 +332,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
                   
                   <div className="stat-card">
-                    <div className="stat-card-icon">📈</div>
+                    <MdTrendingUp className="stat-card-icon" />
                     <div className="stat-card-content">
                       <div className="stat-card-value" style={{ color: getColorPorcentaje(
                         profile.estadisticas.respuestasCorrectas > 0
@@ -297,7 +358,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
                   
                   <div className="stat-card">
-                    <div className="stat-card-icon">🔥</div>
+                    <FaFire className="stat-card-icon" />
                     <div className="stat-card-content">
                       <div className="stat-card-value">{profile.estadisticas.racha || 0}</div>
                       <div className="stat-card-label">Racha</div>
@@ -305,7 +366,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
                   
                   <div className="stat-card">
-                    <div className="stat-card-icon">💯</div>
+                    <FaCheckCircle className="stat-card-icon" style={{ fontSize: '2em' }} />
                     <div className="stat-card-content">
                       <div className="stat-card-value" style={{ color: getColorPorcentaje(profile.estadisticas.mejorPorcentaje || 0) }}>
                         {profile.estadisticas.mejorPorcentaje || 0}%
@@ -315,7 +376,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
                   
                   <div className="stat-card">
-                    <div className="stat-card-icon">⏱️</div>
+                    <FaClock className="stat-card-icon" />
                     <div className="stat-card-content">
                       <div className="stat-card-value">{profile.estadisticas.respuestasIncorrectas}</div>
                       <div className="stat-card-label">Fallos</div>
@@ -348,7 +409,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
                 ) : (
                   <div className="empty-state">
-                    <div className="empty-icon">🏆</div>
+                    <FaTrophy className="empty-icon" style={{ fontSize: '3em', color: '#cbd5e1' }} />
                     <p className="empty-text">Aún no tienes medallas</p>
                     <p className="empty-subtext">¡Completa trivias para ganarlas!</p>
                   </div>
@@ -390,7 +451,7 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
                 ) : (
                   <div className="empty-state">
-                    <div className="empty-icon">📜</div>
+                    <FaScroll className="empty-icon" style={{ fontSize: '3em', color: '#cbd5e1' }} />
                     <p className="empty-text">Aún no tienes historial</p>
                     <p className="empty-subtext">¡Empieza a jugar ahora!</p>
                   </div>
@@ -404,7 +465,10 @@ const Profile = ({ usuario, onUpdate }) => {
         <div className="profile-right">
           <div className="ranking-card-compact">
             <div className="ranking-header">
-              <h3 className="ranking-title">🏆 Top 10 Ranking</h3>
+              <h3 className="ranking-title">
+                <FaTrophy style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                Top 10 Ranking
+              </h3>
               <div className="ranking-user-position">
                 <span className="position-label">Tu posición:</span>
                 <span className="position-value">#{userRank}</span>
@@ -450,7 +514,10 @@ const Profile = ({ usuario, onUpdate }) => {
 
           {/* Stats resumen */}
           <div className="summary-card">
-            <h3 className="summary-title">📈 Resumen Semanal</h3>
+            <h3 className="summary-title">
+              <FaChartLine style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+              Resumen Semanal
+            </h3>
             <div className="summary-stats">
               <div className="summary-stat">
                 <div className="summary-stat-value">+245</div>

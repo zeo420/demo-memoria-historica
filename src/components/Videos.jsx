@@ -1,7 +1,41 @@
-// src/components/Videos.jsx - Con Panel de Administración
+// src/components/Videos.jsx - Con iconos de react-icons
 import React, { useState, useEffect } from 'react';
 import { videosAPI } from '../services/api';
 import './Videos.css';
+import { 
+  FaVideo, 
+  FaSearch, 
+  FaPlay, 
+  FaHeart, 
+  FaRegHeart,
+  FaEdit,
+  FaTrash,
+  FaSave,
+  FaTimes,
+  FaPlus,
+  FaEye,
+  FaClock,
+  FaThumbsUp,
+  FaUserShield,
+  FaUser,
+  FaCheckCircle
+} from 'react-icons/fa';
+import { 
+  MdTimer,
+  MdPerson,
+  MdGroup,
+  MdSchool,
+  MdTrendingUp,
+  MdSettings,
+  MdAdminPanelSettings,
+  MdAdd,
+  MdSave,
+  MdClose,
+  MdPlayArrow,
+  MdVisibility,
+  MdDelete,
+  MdMovieFilter
+} from 'react-icons/md';
 
 const Videos = () => {
   const [videos, setVideos] = useState([]);
@@ -97,10 +131,10 @@ const Videos = () => {
         categoria: 'politico',
         duracion: 0
       });
-      alert('✅ Video agregado exitosamente');
+      alert('Video agregado exitosamente');
     } catch (error) {
       console.error('Error al agregar video:', error);
-      alert('❌ Error al agregar video');
+      alert('Error al agregar video');
     }
   };
 
@@ -113,10 +147,10 @@ const Videos = () => {
       if (videoActual?._id === editandoVideo._id) {
         setVideoActual(actualizado);
       }
-      alert('✅ Video actualizado exitosamente');
+      alert('Video actualizado exitosamente');
     } catch (error) {
       console.error('Error al editar video:', error);
-      alert('❌ Error al actualizar video');
+      alert('Error al actualizar video');
     }
   };
 
@@ -129,10 +163,10 @@ const Videos = () => {
       if (videoActual?._id === videoId) {
         setVideoActual(null);
       }
-      alert('✅ Video eliminado exitosamente');
+      alert('Video eliminado exitosamente');
     } catch (error) {
       console.error('Error al eliminar video:', error);
-      alert('❌ Error al eliminar video');
+      alert('Error al eliminar video');
     }
   };
 
@@ -158,118 +192,7 @@ const Videos = () => {
     { valor: 'economico', etiqueta: 'Economía', color: '#8B5CF6' }
   ];
 
-  const videosEjemplo = [
-  {
-    _id: '1',
-    titulo: 'La Independencia de Colombia - Documental Completo',
-    descripcion: 'Documental histórico sobre el proceso de independencia de Colombia, desde el Grito de Independencia hasta la Batalla de Boyacá.',
-    youtubeId: 'kI7lMfwC7no', // Reemplaza con tu ID real
-    categoria: 'politico',
-    duracion: 1545, // 25:45 en segundos
-    vistas: 1234567,
-    likes: 45678,
-    fecha: '2024-01-15'
-  },
-  {
-    _id: '2',
-    titulo: 'El Bogotazo: El día que Colombia cambió para siempre',
-    descripcion: 'Reconstrucción histórica del asesinato de Jorge Eliécer Gaitán y los eventos que desencadenaron La Violencia.',
-    youtubeId: 'FPTMx2GQjxM', // Reemplaza con tu ID real
-    categoria: 'conflicto',
-    duracion: 1860, // 31:00 en segundos
-    vistas: 987654,
-    likes: 32100,
-    fecha: '2024-01-10'
-  },
-  {
-    _id: '3',
-    titulo: 'Gabriel García Márquez: Vida y Obra',
-    descripcion: 'Biografía del Premio Nobel colombiano y análisis de su obra literaria más importante.',
-    youtubeId: 'XYZ789ghi012', // Reemplaza con tu ID real
-    categoria: 'cultural',
-    duracion: 2820, // 47:00 en segundos
-    vistas: 2345678,
-    likes: 78901,
-    fecha: '2024-01-05'
-  },
-  {
-    _id: '4',
-    titulo: 'El Proceso de Paz en Colombia - Documental 2023',
-    descripcion: 'Análisis detallado del proceso de paz con las FARC, desde los diálogos hasta la implementación.',
-    youtubeId: 'DEF345jkl678', // Reemplaza con tu ID real
-    categoria: 'politico',
-    duracion: 3540, // 59:00 en segundos
-    vistas: 876543,
-    likes: 23456,
-    fecha: '2024-01-20'
-  },
-  {
-    _id: '5',
-    titulo: 'Movimientos Sociales en Colombia: Del Paro Nacional a la Transformación',
-    descripcion: 'Documental sobre las protestas sociales en Colombia y su impacto en la política nacional.',
-    youtubeId: 'GHI901mno234', // Reemplaza con tu ID real
-    categoria: 'social',
-    duracion: 2760, // 46:00 en segundos
-    vistas: 654321,
-    likes: 19876,
-    fecha: '2024-01-25'
-  },
-  {
-    _id: '6',
-    titulo: 'Historia Económica de Colombia: Del Café al Petróleo',
-    descripcion: 'Análisis de la evolución económica de Colombia y los factores que han moldeado su desarrollo.',
-    youtubeId: 'JKL567pqr890', // Reemplaza con tu ID real
-    categoria: 'economico',
-    duracion: 3120, // 52:00 en segundos
-    vistas: 543210,
-    likes: 12345,
-    fecha: '2024-02-01'
-  },
-  {
-    _id: '7',
-    titulo: 'La Guerra de los Mil Días - Documental Histórico',
-    descripcion: 'Reconstrucción de la guerra civil que marcó el inicio del siglo XX en Colombia.',
-    youtubeId: 'MNO123stu456', // Reemplaza con tu ID real
-    categoria: 'conflicto',
-    duracion: 2940, // 49:00 en segundos
-    vistas: 432109,
-    likes: 9876,
-    fecha: '2024-02-05'
-  },
-  {
-    _id: '8',
-    titulo: 'Cultura Afrocolombiana: Raíces y Expresiones',
-    descripcion: 'Documental sobre la influencia y contribuciones de la cultura afro en Colombia.',
-    youtubeId: 'PQR789vwx012', // Reemplaza con tu ID real
-    categoria: 'cultural',
-    duracion: 2640, // 44:00 en segundos
-    vistas: 321098,
-    likes: 8765,
-    fecha: '2024-02-10'
-  },
-  {
-    _id: '9',
-    titulo: 'Revolución Liberal de 1930: Modernización de Colombia',
-    descripcion: 'Análisis de las reformas liberales que transformaron la sociedad colombiana en el siglo XX.',
-    youtubeId: 'STU345yza678', // Reemplaza con tu ID real
-    categoria: 'politico',
-    duracion: 3180, // 53:00 en segundos
-    vistas: 210987,
-    likes: 7654,
-    fecha: '2024-02-15'
-  },
-  {
-    _id: '10',
-    titulo: 'Indígenas Colombianos: Guardianes del Territorio y la Cultura',
-    descripcion: 'Documental sobre las comunidades indígenas de Colombia y su lucha por la preservación cultural.',
-    youtubeId: 'VWX901bcd234', // Reemplaza con tu ID real
-    categoria: 'social',
-    duracion: 3300, // 55:00 en segundos
-    vistas: 109876,
-    likes: 6543,
-    fecha: '2024-02-20'
-  }
-];
+  const videosEjemplo = [];
 
   const videosFiltrados = videos.filter(video => {
     if (filtros.categoria && video.categoria !== filtros.categoria) return false;
@@ -285,7 +208,10 @@ const Videos = () => {
     <div className="videos-container">
       {/* Header */}
       <div className="videos-header">
-        <h1>🎬 Videos Educativos</h1>
+        <h1>
+          <FaVideo className="header-icon" />
+          Videos Educativos
+        </h1>
         <p className="subtitle">Explora la historia de Colombia a través de contenido audiovisual</p>
         
         {esAdmin && (
@@ -293,7 +219,17 @@ const Videos = () => {
             className={`admin-toggle-btn ${modoAdmin ? 'active' : ''}`}
             onClick={() => setModoAdmin(!modoAdmin)}
           >
-            {modoAdmin ? '👤 Modo Usuario' : '⚙️ Modo Administrador'}
+            {modoAdmin ? (
+              <>
+                <FaUser style={{ marginRight: '8px' }} />
+                Modo Usuario
+              </>
+            ) : (
+              <>
+                <MdSettings style={{ marginRight: '8px' }} />
+                Modo Administrador
+              </>
+            )}
           </button>
         )}
       </div>
@@ -302,13 +238,16 @@ const Videos = () => {
       {modoAdmin && (
         <div className="admin-panel">
           <h2 className="admin-title">
-            <span className="admin-icon">⚙️</span>
+            <MdAdminPanelSettings className="admin-icon" />
             Panel de Administración
           </h2>
           
           {/* Formulario para agregar nuevo video */}
           <div className="admin-section">
-            <h3>➕ Agregar Nuevo Video</h3>
+            <h3>
+              <MdAdd style={{ marginRight: '8px' }} />
+              Agregar Nuevo Video
+            </h3>
             <form onSubmit={handleAgregarVideo} className="video-form">
               <div className="form-grid">
                 <div className="form-group">
@@ -357,18 +296,6 @@ const Videos = () => {
                   </select>
                 </div>
                 
-                <div className="form-group">
-                  <label>Duración (segundos) *</label>
-                  <input
-                    type="number"
-                    value={nuevoVideo.duracion}
-                    onChange={(e) => setNuevoVideo({...nuevoVideo, duracion: parseInt(e.target.value) || 0})}
-                    placeholder="300"
-                    min="0"
-                    required
-                  />
-                </div>
-                
                 <div className="form-group full-width">
                   <label>Descripción *</label>
                   <textarea
@@ -383,7 +310,8 @@ const Videos = () => {
               
               <div className="form-actions">
                 <button type="submit" className="submit-btn">
-                  💾 Guardar Video
+                  <FaSave style={{ marginRight: '8px' }} />
+                  Guardar Video
                 </button>
               </div>
             </form>
@@ -391,7 +319,10 @@ const Videos = () => {
 
           {/* Lista de videos para edición */}
           <div className="admin-section">
-            <h3>📝 Editar Videos Existentes ({videos.length})</h3>
+            <h3>
+              <FaEdit style={{ marginRight: '8px' }} />
+              Editar Videos Existentes ({videos.length})
+            </h3>
             <div className="admin-videos-list">
               {videos.map(video => (
                 <div key={video._id} className="admin-video-item">
@@ -428,14 +359,16 @@ const Videos = () => {
                         
                         <div className="edit-actions">
                           <button type="submit" className="edit-save-btn">
-                            💾 Guardar
+                            <FaSave style={{ marginRight: '4px' }} />
+                            Guardar
                           </button>
                           <button 
                             type="button" 
                             className="edit-cancel-btn"
                             onClick={cancelarEdicion}
                           >
-                            ❌ Cancelar
+                            <FaTimes style={{ marginRight: '4px' }} />
+                            Cancelar
                           </button>
                         </div>
                       </div>
@@ -459,9 +392,14 @@ const Videos = () => {
                             {categorias.find(c => c.valor === video.categoria)?.etiqueta}
                           </p>
                           <p className="video-stats-admin">
-                            <span>👁️ {video.vistas || 0} vistas</span>
-                            <span>❤️ {video.likes || 0} likes</span>
-                            <span>⏱️ {Math.floor(video.duracion / 60)}:{(video.duracion % 60).toString().padStart(2, '0')}</span>
+                            <span>
+                              <FaEye style={{ marginRight: '4px' }} />
+                              {video.vistas || 0} vistas
+                            </span>
+                            <span>
+                              <FaHeart style={{ marginRight: '4px' }} />
+                              {video.likes || 0} likes
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -470,13 +408,15 @@ const Videos = () => {
                           className="action-btn edit-btn"
                           onClick={() => iniciarEdicion(video)}
                         >
-                          ✏️ Editar
+                          <FaEdit style={{ marginRight: '4px' }} />
+                          Editar
                         </button>
                         <button 
                           className="action-btn delete-btn"
                           onClick={() => handleEliminarVideo(video._id)}
                         >
-                          🗑️ Eliminar
+                          <FaTrash style={{ marginRight: '4px' }} />
+                          Eliminar
                         </button>
                       </div>
                     </>
@@ -491,7 +431,7 @@ const Videos = () => {
       {/* Filtros y búsqueda */}
       <div className="filters-section">
         <div className="search-container">
-          <div className="search-icon">🔍</div>
+          <FaSearch className="search-icon" />
           <input
             type="text"
             placeholder="Buscar videos por título o descripción..."
@@ -504,7 +444,7 @@ const Videos = () => {
               className="clear-search"
               onClick={() => setFiltros({ ...filtros, busqueda: '' })}
             >
-              ✕
+              <FaTimes />
             </button>
           )}
         </div>
@@ -545,7 +485,8 @@ const Videos = () => {
               className="close-player-btn"
               onClick={() => setVideoActual(null)}
             >
-              ✕ Cerrar
+              <FaTimes style={{ marginRight: '4px' }} />
+              Cerrar
             </button>
             <h2 className="player-title">{videoActual.titulo}</h2>
           </div>
@@ -576,14 +517,8 @@ const Videos = () => {
                   </span>
                   <div className="video-stats-player">
                     <span className="stat-item">
-                      <span className="stat-icon">👁️</span>
+                      <FaEye className="stat-icon" />
                       <span className="stat-number">{videoActual.vistas || 0}</span>
-                    </span>
-                    <span className="stat-item">
-                      <span className="stat-icon">⏱️</span>
-                      <span className="stat-number">
-                        {Math.floor(videoActual.duracion / 60)}:{(videoActual.duracion % 60).toString().padStart(2, '0')}
-                      </span>
                     </span>
                   </div>
                 </div>
@@ -592,9 +527,11 @@ const Videos = () => {
                   className={`like-btn-player ${liked.has(videoActual._id) ? 'liked' : ''}`}
                   onClick={() => handleLike(videoActual._id)}
                 >
-                  <span className="like-icon">
-                    {liked.has(videoActual._id) ? '❤️' : '🤍'}
-                  </span>
+                  {liked.has(videoActual._id) ? (
+                    <FaHeart className="like-icon" />
+                  ) : (
+                    <FaRegHeart className="like-icon" />
+                  )}
                   <span className="like-text">
                     {liked.has(videoActual._id) ? 'Te gusta' : 'Me gusta'}
                   </span>
@@ -620,7 +557,7 @@ const Videos = () => {
           </div>
         ) : videosFiltrados.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">🎬</div>
+            <MdMovieFilter className="empty-icon" style={{ fontSize: '64px', color: '#cbd5e1' }} />
             <h3>No se encontraron videos</h3>
             <p>Intenta con otros filtros de búsqueda</p>
           </div>
@@ -639,7 +576,7 @@ const Videos = () => {
                 />
                 <div className="video-overlay">
                   <div className="play-button">
-                    <span className="play-icon">▶</span>
+                    <FaPlay className="play-icon" />
                   </div>
                   <div className="video-duration">
                     {Math.floor(video.duracion / 60)}:{(video.duracion % 60).toString().padStart(2, '0')}
@@ -660,11 +597,11 @@ const Videos = () => {
                 <div className="video-card-footer">
                   <div className="video-stats-card">
                     <span className="stat">
-                      <span className="stat-icon">👁️</span>
+                      <FaEye className="stat-icon" />
                       <span className="stat-number">{video.vistas || 0}</span>
                     </span>
                     <span className="stat">
-                      <span className="stat-icon">❤️</span>
+                      <FaHeart className="stat-icon" />
                       <span className="stat-number">{video.likes || 0}</span>
                     </span>
                   </div>
@@ -690,12 +627,15 @@ const Videos = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>✏️ Editar Video</h2>
+              <h2>
+                <FaEdit style={{ marginRight: '8px' }} />
+                Editar Video
+              </h2>
               <button 
                 className="modal-close"
                 onClick={cancelarEdicion}
               >
-                ✕
+                <FaTimes />
               </button>
             </div>
             <form onSubmit={handleEditarVideo} className="modal-form">
@@ -735,14 +675,16 @@ const Videos = () => {
               
               <div className="modal-actions">
                 <button type="submit" className="modal-btn primary">
-                  💾 Guardar Cambios
+                  <FaSave style={{ marginRight: '8px' }} />
+                  Guardar Cambios
                 </button>
                 <button 
                   type="button" 
                   className="modal-btn secondary"
                   onClick={cancelarEdicion}
                 >
-                  ❌ Cancelar
+                  <FaTimes style={{ marginRight: '8px' }} />
+                  Cancelar
                 </button>
               </div>
             </form>

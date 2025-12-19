@@ -1,30 +1,119 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import './Home.css';
+
+import {
+  FaCalendarAlt,
+  FaVideo,
+  FaMap,
+  FaBullseye,
+} from 'react-icons/fa';
 
 const Home = () => {
+  const [activeEffect, setActiveEffect] = useState('none');
+  const [showIntro, setShowIntro] = useState(true);
+
+  const containerRef = useRef(null);
+  const [particles, setParticles] = useState([]);
+
+  // Efectos interactivos disponibles
+  const effects = [
+    { id: 'timeline', label: 'Línea de tiempo' },
+    { id: 'stories', label: 'Historias' },
+    { id: 'explore', label: 'Explorar mapa' },
+    { id: 'quiz', label: 'Test de conocimiento' }
+  ];
+
+  // Crear partículas para el fondo
+  useEffect(() => {
+    const newParticles = Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      speed: Math.random() * 2 + 0.5,
+      delay: Math.random() * 5
+    }));
+    setParticles(newParticles);
+  }, []);
+
   return (
-    <div
-      style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://noticias.imer.mx/wp-content/uploads/2021/05/Colombia_conflicto_260521.jpg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '80vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '1rem',
-        color: '#fff',
-        textAlign: 'center',
-        borderRadius: '8px',
-      }}
-    >
-     <h2 style={{ color: 'yellow', fontSize: '2rem', marginBottom: '1rem' }}>
-        ¿Listo para descubrir la historia que no te contaron?
-      </h2>
-      <p style={{ fontSize: '1rem', color: 'white' }}>
-        En Colombia, muchos jóvenes no conocen a fondo los hechos que han marcado nuestro pasado reciente. Esta plataforma busca <strong>fortalecer la memoria histórica</strong> de forma innovadora, combinando <strong>tecnología interactiva</strong>, <strong>narrativas visuales</strong> y <strong>retos gamificados</strong> que hacen del aprendizaje una experiencia participativa y significativa.
-      </p>
-      <h3 style={{ marginTop: '1rem', color: 'yellow' }}>Comencemos con tu recorrido por la historia de Colombia</h3>
+    <div className="history-platform" ref={containerRef}>
+      {/* Overlay introductorio con múltiples loaders */}
+      {showIntro && (
+        <div className="intro-overlay">
+          <div className="intro-content">
+            <h1 className="intro-title">MEMORIA HISTÓRICA DE COLOMBIA</h1>
+            <div className="intro-subtitle">
+              <span>Descubre</span>
+              <span>Reflexiona</span>
+              <span>Construye</span>
+            </div>
+
+            <div className="creative-loader timeline-loader">
+                  <div className="timeline-track">
+                    <div className="timeline-line">
+                      <div className="timeline-progress"></div>
+                    </div>
+                    <div className="time-marker marker-1">600</div>
+                    <div className="time-marker marker-2">1280</div>
+                    <div className="time-marker marker-3">1854</div>
+                    <div className="time-marker marker-4">2000</div>
+                    <div className="time-marker marker-5">2025</div>
+                    <div className="historical-event event-1">
+                      <div className="event-dot"></div>
+                      <div className="event-label">Conflicto</div>
+                    </div>
+                    <div className="historical-event event-2">
+                      <div className="event-dot"></div>
+                      <div className="event-label">Paz</div>
+                    </div>
+                    <div className="historical-event event-3">
+                      <div className="event-dot"></div>
+                      <div className="event-label">Memoria</div>
+                    </div>
+                  </div>
+                  <div className="loader-text">
+                    Reconstruyendo la línea temporal
+                  </div>
+                </div>
+
+            {/* Texto adicional */}
+            <div className="intro-quote">
+              "La historia no es lo que pasó, es lo que recordamos"
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sección de actividades interactivas */}
+      <section className="activities-section">
+        <h3 className="section-title">Elige tu forma de explorar</h3>
+
+        <div className="activities-grid">
+          {effects.map((effect) => (
+            <div
+              key={effect.id}
+              className={`activity-card ${activeEffect === effect.id ? 'active' : ''}`}
+              onClick={() => startEffect(effect.id)}
+            >
+              <div className="card-icon">
+                {effect.id === 'timeline' && <FaCalendarAlt style={{ marginRight: '6px', verticalAlign: 'middle' }} />}
+                {effect.id === 'stories' && <FaVideo style={{ marginRight: '6px', verticalAlign: 'middle' }} />}
+                {effect.id === 'quiz' && <FaBullseye style={{ marginRight: '6px', verticalAlign: 'middle' }} />}
+                {effect.id === 'explore' && <FaMap style={{ marginRight: '6px', verticalAlign: 'middle' }} />}
+              </div>
+              <h4 className="card-title">{effect.label}</h4>
+              <p className="card-description">
+                {effect.id === 'timeline' && 'Recorre los hitos históricos en orden cronológico'}
+                {effect.id === 'stories' && 'Descubre testimonios y narrativas en video'}
+                {effect.id === 'quiz' && 'Pon a prueba tu conocimiento con desafíos'}
+                {effect.id === 'explore' && 'Explora los lugares emblemáticos del conflicto'}
+              </p>
+              <div className="card-hover-effect"></div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

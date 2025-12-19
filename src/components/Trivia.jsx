@@ -1,7 +1,24 @@
-// src/components/Trivia.jsx - Versión corregida
+// ============================================
+// 1. Trivia.jsx - Con iconos de react-icons
+// ============================================
 import React, { useState, useEffect } from 'react';
 import { triviaAPI } from '../services/api';
-import './Trivia.css'; // Importa el CSS
+import './Trivia.css';
+import {
+  FaTrophy,
+  FaThumbsUp,
+  FaBook,
+  FaRocket,
+  FaRedo,
+  FaFlag,
+  FaMedal
+} from 'react-icons/fa';
+import {
+  MdSettings,
+  MdHourglassEmpty,
+  MdCelebration,
+  MdBarChart
+} from 'react-icons/md';
 
 const Trivia = ({ usuario, onTriviaComplete }) => {
   const [preguntas, setPreguntas] = useState([]);
@@ -34,7 +51,6 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
 
       console.log('Cargando preguntas con params:', params);
       
-      // Para desarrollo: usar datos mock si la API no está disponible
       if (!triviaAPI || !triviaAPI.getPreguntas) {
         console.warn('API no disponible, usando datos de prueba');
         const preguntasMock = generarPreguntasMock(configuracion.cantidad);
@@ -60,7 +76,6 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
     } catch (err) {
       console.error('Error al cargar preguntas:', err);
       setError('Error al cargar las preguntas. Usando preguntas de prueba.');
-      // Datos de respaldo
       const preguntasMock = generarPreguntasMock(configuracion.cantidad);
       setPreguntas(preguntasMock);
       setMostrarConfig(false);
@@ -71,7 +86,6 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
     }
   };
 
-  // Función para generar preguntas de prueba
   const generarPreguntasMock = (cantidad) => {
     const temas = [
       "Independencia de Colombia",
@@ -159,7 +173,6 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
     const puntosFinales = puntuacion + (respuestaSeleccionada === preguntas[preguntaActual].respuestaCorrecta ? preguntas[preguntaActual].puntos : 0);
 
     try {
-      // Si la API está disponible, guardar resultados
       if (triviaAPI && triviaAPI.guardarResultado) {
         const resultado = await triviaAPI.guardarResultado({
           preguntasRespondidas: todasRespuestas,
@@ -169,19 +182,16 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
 
         console.log('✅ Resultado guardado:', resultado);
         
-        // Actualizar usuario en el componente padre
         if (onTriviaComplete) {
           onTriviaComplete(resultado.usuario);
         }
 
-        // Guardar nuevas medallas para mostrar
         if (resultado.nuevasMedallas && resultado.nuevasMedallas.length > 0) {
           setNuevasMedallas(resultado.nuevasMedallas);
         }
       }
     } catch (err) {
       console.error('Error al guardar resultado:', err);
-      // Continuar sin guardar en caso de error
     }
   };
 
@@ -196,12 +206,14 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
     setNuevasMedallas([]);
   };
 
-  // Mostrar pantalla de configuración
   if (mostrarConfig) {
     return (
       <div className="trivia-container">
         <div className="config-card">
-          <h2>⚙️ Configurar Trivia</h2>
+          <h2>
+            <MdSettings style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            Configurar Trivia
+          </h2>
           
           <div className="config-group">
             <label htmlFor="cantidad-preguntas">Número de preguntas (5-20):</label>
@@ -261,7 +273,8 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
 
           {cargandoPreguntas && (
             <div className="loading-message">
-              <span>⏳ Cargando preguntas...</span>
+              <MdHourglassEmpty style={{ marginRight: '8px' }} />
+              Cargando preguntas...
             </div>
           )}
 
@@ -270,7 +283,12 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
             onClick={handleIniciarTrivia}
             disabled={cargandoPreguntas}
           >
-            {cargandoPreguntas ? 'Cargando...' : '🚀 Comenzar Trivia'}
+            {cargandoPreguntas ? 'Cargando...' : (
+              <>
+                <FaRocket style={{ marginRight: '8px' }} />
+                Comenzar Trivia
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -298,11 +316,14 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
         <div className="resultado-card">
           {nuevasMedallas.length > 0 && (
             <div className="medallas-nuevas">
-              <h3>🎉 ¡Nuevas Medallas Desbloqueadas!</h3>
+              <h3>
+                <MdCelebration style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                ¡Nuevas Medallas Desbloqueadas!
+              </h3>
               <div className="medallas-grid-nuevas">
                 {nuevasMedallas.map((medalla, idx) => (
                   <div key={idx} className="medalla-nueva animate-medal">
-                    <span className="medalla-icono">🏅</span>
+                    <FaMedal className="medalla-icono" />
                     <span className="medalla-nombre">{medalla.nombre}</span>
                   </div>
                 ))}
@@ -310,7 +331,10 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
             </div>
           )}
 
-          <h2>🎉 ¡Trivia Completada!</h2>
+          <h2>
+            <MdCelebration style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+            ¡Trivia Completada!
+          </h2>
           
           <div className="resultado-stats">
             <div className="stat-grande">
@@ -330,18 +354,40 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
           </div>
 
           <div className="mensaje-resultado">
-            {porcentaje >= 80 && "🏆 ¡Excelente! Dominas la historia colombiana"}
-            {porcentaje >= 60 && porcentaje < 80 && "👍 ¡Muy bien! Buen conocimiento histórico"}
-            {porcentaje >= 40 && porcentaje < 60 && "📚 ¡No está mal! Sigue aprendiendo"}
-            {porcentaje < 40 && "💪 Sigue practicando, mejorarás"}
+            {porcentaje >= 80 && (
+              <>
+                <FaTrophy style={{ marginRight: '8px' }} />
+                ¡Excelente! Dominas la historia colombiana
+              </>
+            )}
+            {porcentaje >= 60 && porcentaje < 80 && (
+              <>
+                <FaThumbsUp style={{ marginRight: '8px' }} />
+                ¡Muy bien! Buen conocimiento histórico
+              </>
+            )}
+            {porcentaje >= 40 && porcentaje < 60 && (
+              <>
+                <FaBook style={{ marginRight: '8px' }} />
+                ¡No está mal! Sigue aprendiendo
+              </>
+            )}
+            {porcentaje < 40 && (
+              <>
+                <FaBook style={{ marginRight: '8px' }} />
+                Sigue practicando, mejorarás
+              </>
+            )}
           </div>
 
           <div className="resultado-acciones">
             <button className="btn-reintentar" onClick={reiniciarTrivia}>
-              🔄 Nueva Trivia
+              <FaRedo style={{ marginRight: '8px' }} />
+              Nueva Trivia
             </button>
             <button className="btn-secundario" onClick={() => window.location.href = '/dashboard'}>
-              📊 Ver Dashboard
+              <MdBarChart style={{ marginRight: '8px' }} />
+              Ver Dashboard
             </button>
           </div>
         </div>
@@ -426,7 +472,14 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
 
         {respuestaSeleccionada !== null && (
           <button className="siguiente-btn" onClick={handleSiguiente}>
-            {preguntaActual < preguntas.length - 1 ? 'Siguiente →' : 'Finalizar 🏁'}
+            {preguntaActual < preguntas.length - 1 ? (
+              'Siguiente →'
+            ) : (
+              <>
+                Finalizar
+                <FaFlag style={{ marginLeft: '8px' }} />
+              </>
+            )}
           </button>
         )}
       </div>

@@ -1,4 +1,6 @@
-// src/App.jsx - Actualizado con manejo de estado completo
+// ============================================
+// 2. App.jsx - Con iconos de react-icons
+// ============================================
 import React, { useState, useEffect } from 'react';
 import { authAPI } from './services/api';
 import Login from './components/Login';
@@ -10,6 +12,17 @@ import Profile from './components/Profile';
 import Videos from './components/Videos';
 import Mapas from './components/Mapas';
 import './styles.css';
+import {
+  FaHome,
+  FaCalendarAlt,
+  FaVideo,
+  FaMap,
+  FaBullseye,
+  FaChartBar,
+  FaUser,
+  FaStar,
+  FaSignOutAlt
+} from 'react-icons/fa';
 
 function App() {
   const [usuario, setUsuario] = useState(authAPI.getCurrentUser());
@@ -28,12 +41,10 @@ function App() {
 
   const handleProfileUpdate = (updatedUser) => {
     setUsuario({ ...usuario, ...updatedUser });
-    // Actualizar también en localStorage
     localStorage.setItem('user', JSON.stringify({ ...usuario, ...updatedUser }));
   };
 
   const handleTriviaComplete = (updatedUserData) => {
-    // Actualizar datos del usuario después de completar trivia
     setUsuario({ ...usuario, ...updatedUserData });
     localStorage.setItem('user', JSON.stringify({ ...usuario, ...updatedUserData }));
   };
@@ -47,6 +58,7 @@ function App() {
       <nav className="navbar">
         <div className="navbar-brand">
           <h1>Memoria Histórica</h1>
+          <h2>{usuario.nombre}</h2>
         </div>
         
         <div className="nav-buttons">
@@ -54,53 +66,64 @@ function App() {
             onClick={() => setVistaActual('home')}
             className={vistaActual === 'home' ? 'active' : ''}
           >
-            🏠 Inicio
+            <FaHome style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Inicio
           </button>
           <button 
             onClick={() => setVistaActual('timeline')}
             className={vistaActual === 'timeline' ? 'active' : ''}
           >
-            📅 Timeline
+            <FaCalendarAlt style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Timeline
           </button>
           <button 
             onClick={() => setVistaActual('videos')}
             className={vistaActual === 'videos' ? 'active' : ''}
           >
-            🎬 Videos
+            <FaVideo style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Videos
           </button>
           <button 
             onClick={() => setVistaActual('mapas')}
             className={vistaActual === 'mapas' ? 'active' : ''}
           >
-            🗺️ Mapas
+            <FaMap style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Mapas
           </button>
           <button 
             onClick={() => setVistaActual('trivia')}
             className={vistaActual === 'trivia' ? 'active' : ''}
           >
-            🎯 Trivia
+            <FaBullseye style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Trivia
           </button>
           <button 
             onClick={() => setVistaActual('dashboard')}
             className={vistaActual === 'dashboard' ? 'active' : ''}
           >
-            📊 Dashboard
+            <FaChartBar style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Dashboard
           </button>
           <button 
             onClick={() => setVistaActual('profile')}
             className={vistaActual === 'profile' ? 'active' : ''}
           >
-            👤 Perfil
+            <FaUser style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Perfil
           </button>
         </div>
 
         <div className="user-section">
           <div className="user-info">
             <span className="user-level">Nivel {usuario.nivel || 1}</span>
-            <span className="user-points">⭐ {usuario.puntos || 0} pts</span>
+            <span className="user-points">
+              <FaStar style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+              {usuario.puntos || 0} pts
+            </span>
           </div>
           <button onClick={handleLogout} className="logout-btn">
-            🚪 Salir
+            <FaSignOutAlt style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Salir
           </button>
         </div>
       </nav>
@@ -145,8 +168,14 @@ function App() {
 
         .navbar-brand h1 {
           margin: 0;
-          font-size: 1.5em;
+          font-size: 0.9em;
           color: #333;
+        }
+
+        .navbar-brand h2 {
+          margin: 0;
+          font-size: 0.5em;
+          color: #616161ff;
         }
 
         .nav-buttons {
@@ -162,8 +191,10 @@ function App() {
           color: #666;
           cursor: pointer;
           border-radius: 8px;
-          font-size: 1em;
+          font-size: 0.9em;
           transition: all 0.3s;
+          display: flex;
+          align-items: center;
         }
 
         .nav-buttons button:hover {
@@ -172,7 +203,7 @@ function App() {
         }
 
         .nav-buttons button.active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #2a2a2aff 0%, #2d4dffff 100%);
           color: white;
         }
 
@@ -194,6 +225,8 @@ function App() {
           border-radius: 20px;
           font-weight: 600;
           color: #555;
+          display: flex;
+          align-items: center;
         }
 
         .user-level {
@@ -208,7 +241,9 @@ function App() {
           border: none;
           border-radius: 8px;
           cursor: pointer;
-          font-size: 1em;
+          font-size: 0.9em;
+          display: flex;
+          align-items: center;
         }
 
         .logout-btn:hover {
