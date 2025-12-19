@@ -774,7 +774,7 @@ const Login = ({ onLogin }) => {
         .shape-1 {
           width: 300px;
           height: 300px;
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #970202ff, #764ba2);
           top: 10%;
           left: 5%;
           animation: float-shape 20s infinite alternate;
@@ -848,7 +848,7 @@ const Login = ({ onLogin }) => {
           font-size: 2em;
           color: #333;
           margin: 0;
-          background: linear-gradient(135deg, #333, #667eea);
+          background: linear-gradient(135deg, #333, #970202ff);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -895,7 +895,7 @@ const Login = ({ onLogin }) => {
         }
 
         .progress-steps span.active {
-          color: #667eea;
+          color: #970202ff;
           font-weight: 600;
         }
 
@@ -925,8 +925,8 @@ const Login = ({ onLogin }) => {
 
         .tab-btn.active {
           background: white;
-          border-color: #667eea;
-          color: #667eea;
+          border-color: #970202ff;
+          color: #970202ff;
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
         }
 
@@ -937,7 +937,7 @@ const Login = ({ onLogin }) => {
           transform: translateX(-50%);
           width: 50%;
           height: 3px;
-          background: linear-gradient(90deg, #667eea, #764ba2);
+          background: linear-gradient(90deg, #970202ff, #764ba2);
           border-radius: 3px 3px 0 0;
         }
 
@@ -964,7 +964,7 @@ const Login = ({ onLogin }) => {
         }
 
         .form-group-dynamic.active .input-icon {
-          color: #667eea;
+          color: #970202ff;
         }
 
         .form-group-dynamic label {
@@ -975,7 +975,7 @@ const Login = ({ onLogin }) => {
         }
 
         .form-group-dynamic.active label {
-          color: #667eea;
+          color: #970202ff;
         }
 
         .form-group-dynamic input {
@@ -990,7 +990,7 @@ const Login = ({ onLogin }) => {
 
         .form-group-dynamic input:focus {
           outline: none;
-          border-color: #667eea;
+          border-color: #970202ff;
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
         }
 
@@ -1005,7 +1005,7 @@ const Login = ({ onLogin }) => {
           left: 0;
           width: 0;
           height: 2px;
-          background: linear-gradient(90deg, #667eea, #764ba2);
+          background: linear-gradient(90deg, #970202ff, #764ba2);
           transition: width 0.3s;
         }
 
@@ -1031,7 +1031,7 @@ const Login = ({ onLogin }) => {
         }
 
         .toggle-password:hover {
-          color: #667eea;
+          color: #970202ff;
         }
 
         .password-strength {
@@ -1158,7 +1158,7 @@ const Login = ({ onLogin }) => {
         .mode-toggle-btn {
           background: none;
           border: none;
-          color: #667eea;
+          color: #970202ff;
           cursor: pointer;
           font-weight: 600;
           text-decoration: underline;
@@ -1191,7 +1191,7 @@ const Login = ({ onLogin }) => {
         }
 
         .demo-icon {
-          color: #667eea;
+          color: #970202ff;
           font-size: 1.5em;
         }
 
@@ -1222,7 +1222,7 @@ const Login = ({ onLogin }) => {
 
         .demo-btn:hover:not(:disabled) {
           transform: translateY(-2px);
-          border-color: #667eea;
+          border-color: #970202ff;
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
         }
 
@@ -1255,7 +1255,7 @@ const Login = ({ onLogin }) => {
           color: #333;
           margin-bottom: 30px;
           font-size: 1.8em;
-          background: linear-gradient(135deg, #333, #667eea);
+          background: linear-gradient(135deg, #333, #970202ff);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -1319,7 +1319,7 @@ const Login = ({ onLogin }) => {
         .stat-number {
           font-size: 1.8em;
           font-weight: 700;
-          color: #667eea;
+          color: #970202ff;
         }
 
         .stat-label {

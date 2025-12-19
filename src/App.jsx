@@ -230,13 +230,13 @@ function App() {
         }
 
         .user-level {
-          background: #ffd700;
-          color: #333;
+          background: linear-gradient(135deg, #ff7700ff 0%, #fff12dff 100%);
+          color: white;
         }
 
         .logout-btn {
           padding: 10px 20px;
-          background: #dc3545;
+          background: linear-gradient(135deg, #ff0000ff 0%, #0d0d0dff 100%);
           color: white;
           border: none;
           border-radius: 8px;
@@ -247,7 +247,8 @@ function App() {
         }
 
         .logout-btn:hover {
-          background: #c82333;
+          background: linear-gradient(135deg, #494949ff 0%, #ff1f1fff 100%);
+          color: black;
         }
 
         .main-content {

@@ -38,6 +38,7 @@ const Profile = ({ usuario, onUpdate }) => {
 
   const loadProfileData = async () => {
     try {
+      await new Promise(resolve => setTimeout(resolve, 3000));
       const [profileData, rankingData, historialData] = await Promise.all([
         userAPI.getProfile(),
         userAPI.getRanking(),
