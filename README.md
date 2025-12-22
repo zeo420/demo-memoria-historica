@@ -463,15 +463,8 @@ Este proyecto fue desarrollado siguiendo la metodología **Design Thinking**:
 - [x] Historial de trivias
 
 ### Fase 3: Expansión de Contenido (En Progreso)
-- [ ] Historia universal
 - [ ] Biografías de personajes
 - [ ] Narrativas interactivas
-- [ ] Podcasts históricos
-
-### Fase 4: Multijugador (Planeado)
-- [ ] WebSockets con Socket.io
-- [ ] Salas de trivia en tiempo real
-- [ ] Chat entre usuarios
 - [ ] Torneos y competencias
 
 ### Fase 5: Deployment (Planeado)

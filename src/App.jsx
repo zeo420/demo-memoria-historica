@@ -8,14 +8,20 @@ import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import Videos from './components/Videos';
 import Mapas from './components/Mapas';
+import Biografias from './components/Biografias';
+import Narrativas from './components/Narrativas';
+import Torneos from './components/Torneos';
 import './styles.css';
 import {
+  FaTrophy,
   FaHome,
   FaCalendarAlt,
   FaVideo,
   FaMap,
   FaBullseye,
   FaChartBar,
+  FaUsers,
+  FaBook,
   FaUser,
   FaStar,
   FaSignOutAlt
@@ -88,11 +94,32 @@ function App() {
             Mapas
           </button>
           <button
+            onClick={() => setVistaActual('biografias')}
+            className={vistaActual === 'biografias' ? 'active' : ''}
+          >
+            <FaUsers style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Biografías
+          </button>
+          <button
+            onClick={() => setVistaActual('narrativas')}
+            className={vistaActual === 'narrativas' ? 'active' : ''}
+          >
+            <FaBook style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Narrativas
+          </button>
+          <button
             onClick={() => setVistaActual('trivia')}
             className={vistaActual === 'trivia' ? 'active' : ''}
           >
             <FaBullseye style={{ marginRight: '6px', verticalAlign: 'middle' }} />
             Trivia
+          </button>
+          <button
+            onClick={() => setVistaActual('torneos')}
+            className={vistaActual === 'torneos' ? 'active' : ''}
+          >
+            <FaTrophy style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+            Torneos
           </button>
           <button
             onClick={() => setVistaActual('dashboard')}
@@ -130,12 +157,15 @@ function App() {
         {vistaActual === 'timeline' && <Timeline />}
         {vistaActual === 'videos' && <Videos />}
         {vistaActual === 'mapas' && <Mapas />}
+        {vistaActual === 'biografias' && <Biografias />}
+        {vistaActual === 'narrativas' && <Narrativas />}
         {vistaActual === 'trivia' && (
           <Trivia
             usuario={usuario}
             onTriviaComplete={handleTriviaComplete}
           />
         )}
+        {vistaActual === 'torneos' && <Torneos usuario={usuario} />}
         {vistaActual === 'dashboard' && <Dashboard usuario={usuario} />}
         {vistaActual === 'profile' && (
           <Profile

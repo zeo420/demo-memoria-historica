@@ -98,10 +98,98 @@ const VideoSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Personaje (Biografía)
+const PersonajeSchema = new mongoose.Schema({
+  nombre: { type: String, required: true },
+  nombreCompleto: String,
+  fechaNacimiento: Date,
+  fechaMuerte: Date,
+  lugarNacimiento: String,
+  pais: { type: String, default: 'Colombia' },
+  ambito: { type: String, enum: ['nacional', 'latinoamerica', 'mundial'], default: 'nacional' },
+  profesiones: [String],
+  biografia: { type: String, required: true },
+  logrosDestacados: [String],
+  frasesCelebres: [{ frase: String, contexto: String }],
+  imagen: String,
+  galeria: [String],
+  eventosRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Evento' }],
+  articulos: [{ titulo: String, contenido: String, fecha: Date }],
+  cronologia: [{
+    año: Number,
+    evento: String,
+    descripcion: String
+  }],
+  legado: String,
+  fuentes: [String],
+  createdAt: { type: Date, default: Date.now }
+});
+
+// Narrativa Interactiva
+const NarrativaSchema = new mongoose.Schema({
+  titulo: { type: String, required: true },
+  subtitulo: String,
+  descripcionCorta: String,
+  ambito: { type: String, enum: ['nacional', 'latinoamerica', 'mundial'], default: 'nacional' },
+  categoria: String,
+  imagen: String,
+  capitulos: [{
+    numero: Number,
+    titulo: String,
+    contenido: String,
+    imagenes: [String],
+    audioUrl: String,
+    preguntas: [{
+      pregunta: String,
+      opciones: [String],
+      respuestaCorrecta: Number
+    }]
+  }],
+  personajesRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Personaje' }],
+  eventosRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Evento' }],
+  duracionEstimada: Number,
+  progreso: [{
+    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    capitulosCompletados: [Number],
+    ultimoCapitulo: Number,
+    fechaUltimaLectura: Date
+  }],
+  createdAt: { type: Date, default: Date.now }
+});
+
+// Podcast
+const PodcastSchema = new mongoose.Schema({
+  titulo: { type: String, required: true },
+  descripcion: String,
+  ambito: { type: String, enum: ['nacional', 'latinoamerica', 'mundial'], default: 'nacional' },
+  categoria: String,
+  duracion: Number,
+  audioUrl: { type: String, required: true },
+  imagenPortada: String,
+  temporada: Number,
+  episodio: Number,
+  transcript: String,
+  personajesRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Personaje' }],
+  eventosRelacionados: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Evento' }],
+  escuchas: { type: Number, default: 0 },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  comentarios: [{
+    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    texto: String,
+    fecha: { type: Date, default: Date.now }
+  }],
+  createdAt: { type: Date, default: Date.now }
+});
+
 const Evento = mongoose.model('Evento', EventoSchema);
 const Pregunta = mongoose.model('Pregunta', PreguntaSchema);
 const Resultado = mongoose.model('Resultado', ResultadoSchema);
 const Video = mongoose.model('Video', VideoSchema);
+const Personaje = mongoose.model('Personaje', PersonajeSchema);
+const Narrativa = mongoose.model('Narrativa', NarrativaSchema);
+const Podcast = mongoose.model('Podcast', PodcastSchema);
+
+const torneosRoutes = require('./torneos');
 
 // ==================== MIDDLEWARE AUTH ====================
 const authMiddleware = async (req, res, next) => {
@@ -121,6 +209,8 @@ const authMiddleware = async (req, res, next) => {
     res.status(401).json({ error: 'Por favor autentícate' });
   }
 };
+
+app.use('/api/torneos', torneosRoutes);
 
 // ==================== RUTAS AUTH ====================
 
@@ -492,6 +582,237 @@ app.get('/api/eventos/mapa', async (req, res) => {
     res.json(eventos);
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener eventos del mapa' });
+  }
+});
+
+// ==================== RUTAS PERSONAJES ====================
+
+// Obtener todos los personajes
+app.get('/api/personajes', async (req, res) => {
+  try {
+    const { ambito, profesion, busqueda } = req.query;
+    const filtro = {};
+    
+    if (ambito) filtro.ambito = ambito;
+    if (profesion) filtro.profesiones = profesion;
+    if (busqueda) {
+      filtro.$or = [
+        { nombre: { $regex: busqueda, $options: 'i' } },
+        { nombreCompleto: { $regex: busqueda, $options: 'i' } },
+        { biografia: { $regex: busqueda, $options: 'i' } }
+      ];
+    }
+    
+    const personajes = await Personaje.find(filtro)
+      .select('nombre fechaNacimiento fechaMuerte profesiones imagen pais ambito')
+      .sort({ nombre: 1 });
+    
+    res.json(personajes);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener personajes' });
+  }
+});
+
+// Obtener personaje por ID
+app.get('/api/personajes/:id', async (req, res) => {
+  try {
+    const personaje = await Personaje.findById(req.params.id)
+      .populate('eventosRelacionados');
+    
+    if (!personaje) {
+      return res.status(404).json({ error: 'Personaje no encontrado' });
+    }
+    
+    res.json(personaje);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener personaje' });
+  }
+});
+
+// Crear personaje (admin)
+app.post('/api/personajes', authMiddleware, async (req, res) => {
+  try {
+    const personaje = new Personaje(req.body);
+    await personaje.save();
+    res.status(201).json(personaje);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear personaje' });
+  }
+});
+
+// ==================== RUTAS NARRATIVAS ====================
+
+// Obtener todas las narrativas
+app.get('/api/narrativas', async (req, res) => {
+  try {
+    const { ambito, categoria } = req.query;
+    const filtro = {};
+    
+    if (ambito) filtro.ambito = ambito;
+    if (categoria) filtro.categoria = categoria;
+    
+    const narrativas = await Narrativa.find(filtro)
+      .select('titulo subtitulo descripcionCorta imagen capitulos ambito categoria duracionEstimada')
+      .sort({ createdAt: -1 });
+    
+    res.json(narrativas);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener narrativas' });
+  }
+});
+
+// Obtener narrativa por ID
+app.get('/api/narrativas/:id', authMiddleware, async (req, res) => {
+  try {
+    const narrativa = await Narrativa.findById(req.params.id)
+      .populate('personajesRelacionados', 'nombre imagen')
+      .populate('eventosRelacionados', 'titulo fecha');
+    
+    if (!narrativa) {
+      return res.status(404).json({ error: 'Narrativa no encontrada' });
+    }
+    
+    // Buscar progreso del usuario
+    const progreso = narrativa.progreso.find(
+      p => p.usuario.toString() === req.user._id.toString()
+    );
+    
+    res.json({
+      ...narrativa.toObject(),
+      progresoUsuario: progreso || { capitulosCompletados: [], ultimoCapitulo: 0 }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener narrativa' });
+  }
+});
+
+// Actualizar progreso de narrativa
+app.post('/api/narrativas/:id/progreso', authMiddleware, async (req, res) => {
+  try {
+    const { capituloCompletado } = req.body;
+    const narrativa = await Narrativa.findById(req.params.id);
+    
+    if (!narrativa) {
+      return res.status(404).json({ error: 'Narrativa no encontrada' });
+    }
+    
+    const progresoIndex = narrativa.progreso.findIndex(
+      p => p.usuario.toString() === req.user._id.toString()
+    );
+    
+    if (progresoIndex === -1) {
+      narrativa.progreso.push({
+        usuario: req.user._id,
+        capitulosCompletados: [capituloCompletado],
+        ultimoCapitulo: capituloCompletado,
+        fechaUltimaLectura: new Date()
+      });
+    } else {
+      const progreso = narrativa.progreso[progresoIndex];
+      if (!progreso.capitulosCompletados.includes(capituloCompletado)) {
+        progreso.capitulosCompletados.push(capituloCompletado);
+      }
+      progreso.ultimoCapitulo = capituloCompletado;
+      progreso.fechaUltimaLectura = new Date();
+    }
+    
+    await narrativa.save();
+    res.json({ message: 'Progreso actualizado' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al actualizar progreso' });
+  }
+});
+
+// ==================== RUTAS PODCASTS ====================
+
+// Obtener todos los podcasts
+app.get('/api/podcasts', async (req, res) => {
+  try {
+    const { ambito, categoria, temporada } = req.query;
+    const filtro = {};
+    
+    if (ambito) filtro.ambito = ambito;
+    if (categoria) filtro.categoria = categoria;
+    if (temporada) filtro.temporada = parseInt(temporada);
+    
+    const podcasts = await Podcast.find(filtro)
+      .select('titulo descripcion duracion imagenPortada temporada episodio escuchas ambito categoria')
+      .sort({ temporada: -1, episodio: -1 });
+    
+    res.json(podcasts);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener podcasts' });
+  }
+});
+
+// Obtener podcast por ID
+app.get('/api/podcasts/:id', async (req, res) => {
+  try {
+    const podcast = await Podcast.findById(req.params.id)
+      .populate('personajesRelacionados', 'nombre imagen')
+      .populate('eventosRelacionados', 'titulo fecha')
+      .populate('comentarios.usuario', 'nombre avatar');
+    
+    if (!podcast) {
+      return res.status(404).json({ error: 'Podcast no encontrado' });
+    }
+    
+    res.json(podcast);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener podcast' });
+  }
+});
+
+// Registrar escucha de podcast
+app.post('/api/podcasts/:id/escuchar', authMiddleware, async (req, res) => {
+  try {
+    const podcast = await Podcast.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { escuchas: 1 } },
+      { new: true }
+    );
+    res.json(podcast);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al registrar escucha' });
+  }
+});
+
+// Toggle like en podcast
+app.post('/api/podcasts/:id/like', authMiddleware, async (req, res) => {
+  try {
+    const podcast = await Podcast.findById(req.params.id);
+    const userId = req.user._id;
+    
+    if (podcast.likes.includes(userId)) {
+      podcast.likes = podcast.likes.filter(id => !id.equals(userId));
+    } else {
+      podcast.likes.push(userId);
+    }
+    
+    await podcast.save();
+    res.json(podcast);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al dar like' });
+  }
+});
+
+// Agregar comentario a podcast
+app.post('/api/podcasts/:id/comentario', authMiddleware, async (req, res) => {
+  try {
+    const { texto } = req.body;
+    const podcast = await Podcast.findById(req.params.id);
+    
+    podcast.comentarios.push({
+      usuario: req.user._id,
+      texto
+    });
+    
+    await podcast.save();
+    await podcast.populate('comentarios.usuario', 'nombre avatar');
+    
+    res.json(podcast);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al agregar comentario' });
   }
 });
 

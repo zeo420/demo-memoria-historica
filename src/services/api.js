@@ -109,6 +109,147 @@ export const triviaAPI = {
   getHistorial: async () => {
     const response = await api.get('/trivia/historial');
     return response.data;
+  },
+
+  getTorneos: async (params = {}) => {
+    try {
+      const queryString = new URLSearchParams(params).toString();
+      const url = queryString ? 
+        `${API_URL}/torneos?${queryString}` : 
+        `${API_URL}/torneos`;
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error al obtener torneos:', error);
+      throw error;
+    }
+  },
+  
+  crearTorneo: async (torneoData) => {
+    try {
+      const response = await fetch(`${API_URL}/torneos`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify(torneoData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Error ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error al crear torneo:', error);
+      throw error;
+    }
+  },
+  
+  unirseTorneo: async (torneoId, usuarioId, nombre = '', codigoAcceso = '') => {
+    try {
+      const response = await fetch(`${API_URL}/torneos/${torneoId}/unirse`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({ usuarioId, nombre, codigoAcceso }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Error ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error al unirse al torneo:', error);
+      throw error;
+    }
+  },
+  
+  abandonarTorneo: async (torneoId, usuarioId) => {
+    try {
+      const response = await fetch(`${API_URL}/torneos/${torneoId}/abandonar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({ usuarioId }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Error ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error al abandonar torneo:', error);
+      throw error;
+    }
+  },
+  
+  getLeaderboard: async (torneoId) => {
+    try {
+      const response = await fetch(`${API_URL}/torneos/${torneoId}/leaderboard`);
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error al obtener leaderboard:', error);
+      throw error;
+    }
+  },
+  
+  registrarResultadoTorneo: async (torneoId, resultadoData) => {
+    try {
+      const response = await fetch(`${API_URL}/torneos/${torneoId}/registrar-resultado`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify(resultadoData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Error ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error al registrar resultado:', error);
+      throw error;
+    }
+  },
+  
+  getMisTorneos: async (usuarioId) => {
+    try {
+      const response = await fetch(`${API_URL}/torneos/usuario/${usuarioId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error al obtener mis torneos:', error);
+      throw error;
+    }
   }
 };
 
@@ -157,6 +298,65 @@ export const videosAPI = {
 export const mapasAPI = {
   getEventosMapa: async (params = {}) => {
     const response = await api.get('/eventos/mapa', { params });
+    return response.data;
+  }
+};
+
+// ==================== PERSONAJES ====================
+export const personajesAPI = {
+  getAll: async (params = {}) => {
+    const response = await api.get('/personajes', { params });
+    return response.data;
+  },
+
+  getById: async (id) => {
+    const response = await api.get(`/personajes/${id}`);
+    return response.data;
+  }
+};
+
+// ==================== NARRATIVAS ====================
+export const narrativasAPI = {
+  getAll: async (params = {}) => {
+    const response = await api.get('/narrativas', { params });
+    return response.data;
+  },
+
+  getById: async (id) => {
+    const response = await api.get(`/narrativas/${id}`);
+    return response.data;
+  },
+
+  actualizarProgreso: async (id, capituloCompletado) => {
+    const response = await api.post(`/narrativas/${id}/progreso`, { capituloCompletado });
+    return response.data;
+  }
+};
+
+// ==================== PODCASTS ====================
+export const podcastsAPI = {
+  getAll: async (params = {}) => {
+    const response = await api.get('/podcasts', { params });
+    return response.data;
+  },
+
+  getById: async (id) => {
+    const response = await api.get(`/podcasts/${id}`);
+    return response.data;
+  },
+
+  registrarEscucha: async (id) => {
+    const response = await api.post(`/podcasts/${id}/escuchar`);
+    return response.data;
+  },
+
+  toggleLike: async (id) => {
+    const response = await api.post(`/podcasts/${id}/like`);
+    return response.data;
+  },
+
+  agregarComentario: async (id, texto) => {
+    const response = await api.post(`/podcasts/${id}/comentario`, { texto });
     return response.data;
   }
 };

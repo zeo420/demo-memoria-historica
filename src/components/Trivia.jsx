@@ -8,13 +8,16 @@ import {
   FaRocket,
   FaRedo,
   FaFlag,
-  FaMedal
+  FaMedal,
+  FaUsers,
+  FaCrown
 } from 'react-icons/fa';
 import {
   MdSettings,
   MdHourglassEmpty,
   MdCelebration,
-  MdBarChart
+  MdBarChart,
+  MdInfo
 } from 'react-icons/md';
 
 const Trivia = ({ usuario, onTriviaComplete }) => {
@@ -35,6 +38,38 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
   });
   const [mostrarConfig, setMostrarConfig] = useState(true);
   const [cargandoPreguntas, setCargandoPreguntas] = useState(false);
+  
+  // Estado para torneo activo
+  const [torneoActivo, setTorneoActivo] = useState(null);
+  const [registrandoEnTorneo, setRegistrandoEnTorneo] = useState(false);
+
+  // Cargar torneo activo al iniciar
+  useEffect(() => {
+    if (usuario) {
+      cargarTorneoActivo();
+    }
+  }, [usuario]);
+
+  const cargarTorneoActivo = async () => {
+    try {
+      if (!usuario || !triviaAPI.getTorneos) return;
+      
+      const torneos = await triviaAPI.getTorneos({ estado: 'activo' });
+      if (torneos && torneos.length > 0) {
+        // Buscar si el usuario está en algún torneo activo
+        const torneoUsuario = torneos.find(t => 
+          t.participantes && 
+          t.participantes.some(p => p.usuarioId === usuario.id)
+        );
+        
+        if (torneoUsuario) {
+          setTorneoActivo(torneoUsuario);
+        }
+      }
+    } catch (error) {
+      console.error('Error al cargar torneo activo:', error);
+    }
+  };
 
   const cargarPreguntas = async () => {
     setCargandoPreguntas(true);
@@ -152,6 +187,22 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
     }
   };
 
+  const registrarEnTorneo = async (torneoId, resultadoData) => {
+    try {
+      setRegistrandoEnTorneo(true);
+      await triviaAPI.registrarResultadoTorneo(torneoId, resultadoData);
+      return { success: true, message: 'Resultado registrado en torneo' };
+    } catch (error) {
+      console.error('Error al registrar en torneo:', error);
+      return { 
+        success: false, 
+        message: error.message || 'Error al registrar en torneo' 
+      };
+    } finally {
+      setRegistrandoEnTorneo(false);
+    }
+  };
+
   const finalizarTrivia = async () => {
     setJuegoTerminado(true);
     
@@ -168,27 +219,75 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
     const respuestasCorrectas = todasRespuestas.filter(r => r.correcta).length;
     const porcentajeAcierto = Math.round((respuestasCorrectas / preguntas.length) * 100);
     const puntosFinales = puntuacion + (respuestaSeleccionada === preguntas[preguntaActual].respuestaCorrecta ? preguntas[preguntaActual].puntos : 0);
+    
+    // Calcular tiempo promedio
+    const tiempoPromedio = Math.floor(
+      todasRespuestas.reduce((acc, r) => acc + (r.tiempo || 0), 0) / todasRespuestas.length
+    );
 
     try {
+      let resultadoGeneral = null;
+      let resultadoTorneo = null;
+      
       if (triviaAPI && triviaAPI.guardarResultado) {
-        const resultado = await triviaAPI.guardarResultado({
+        // Guardar resultado general de trivia
+        resultadoGeneral = await triviaAPI.guardarResultado({
           preguntasRespondidas: todasRespuestas,
           puntosTotales: puntosFinales,
-          porcentajeAcierto
+          porcentajeAcierto,
+          respuestasCorrectas
         });
 
-        console.log('Resultado guardado:', resultado);
+        console.log('Resultado guardado:', resultadoGeneral);
         
         if (onTriviaComplete) {
-          onTriviaComplete(resultado.usuario);
+          onTriviaComplete(resultadoGeneral.usuario);
         }
 
-        if (resultado.nuevasMedallas && resultado.nuevasMedallas.length > 0) {
-          setNuevasMedallas(resultado.nuevasMedallas);
+        // Registrar resultado en torneo activo si existe
+        if (torneoActivo && usuario) {
+          const torneoResult = await registrarEnTorneo(torneoActivo._id, {
+            usuarioId: usuario.id,
+            puntuacion: puntosFinales,
+            respuestasCorrectas: respuestasCorrectas,
+            tiempoPromedio: tiempoPromedio
+          });
+          
+          resultadoTorneo = torneoResult;
+          
+          if (torneoResult.success) {
+            console.log('Resultado registrado en torneo');
+            // Actualizar puntos del torneo en estado local
+            setTorneoActivo(prev => {
+              if (!prev) return prev;
+              const updated = { ...prev };
+              const participanteIndex = updated.participantes.findIndex(p => p.usuarioId === usuario.id);
+              if (participanteIndex !== -1) {
+                updated.participantes[participanteIndex].puntuacion += puntosFinales;
+                updated.participantes[participanteIndex].respuestasCorrectas += respuestasCorrectas;
+              }
+              return updated;
+            });
+          }
+        }
+
+        if (resultadoGeneral.nuevasMedallas && resultadoGeneral.nuevasMedallas.length > 0) {
+          setNuevasMedallas(resultadoGeneral.nuevasMedallas);
         }
       }
+      
+      // Guardar resultados en estado para mostrarlos
+      setResultadoFinal({
+        respuestasCorrectas,
+        porcentajeAcierto,
+        puntosFinales,
+        tiempoPromedio,
+        resultadoTorneo
+      });
+      
     } catch (err) {
       console.error('Error al guardar resultado:', err);
+      setError('Error al guardar los resultados. Intenta nuevamente.');
     }
   };
 
@@ -201,7 +300,11 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
     setMostrarConfig(true);
     setPreguntas([]);
     setNuevasMedallas([]);
+    setResultadoFinal(null);
   };
+
+  // Estado para resultado final
+  const [resultadoFinal, setResultadoFinal] = useState(null);
 
   if (mostrarConfig) {
     return (
@@ -210,7 +313,36 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
           <h2>
             <MdSettings style={{ marginRight: '8px', verticalAlign: 'middle' }} />
             Configurar Trivia
+            {torneoActivo && (
+              <span className="torneo-activo-badge">
+                <FaUsers style={{ marginRight: '5px' }} />
+                Torneo Activo: {torneoActivo.nombre}
+              </span>
+            )}
           </h2>
+          
+          {torneoActivo && (
+            <div className="torneo-info-box">
+              <div className="torneo-info-header">
+                <FaCrown style={{ color: '#FFD700', marginRight: '8px' }} />
+                <strong>Participando en torneo:</strong> {torneoActivo.nombre}
+              </div>
+              <div className="torneo-info-details">
+                <span>
+                  <FaUsers style={{ marginRight: '5px' }} />
+                  {torneoActivo.participantesActuales || 0} participantes
+                </span>
+                <span>
+                  <FaTrophy style={{ marginRight: '5px' }} />
+                  Puntos: {torneoActivo.participantes?.find(p => p.usuarioId === usuario?.id)?.puntuacion || 0}
+                </span>
+              </div>
+              <p className="torneo-info-message">
+                <MdInfo style={{ marginRight: '5px' }} />
+                Tu resultado en esta trivia se registrará automáticamente en el torneo.
+              </p>
+            </div>
+          )}
           
           <div className="config-group">
             <label htmlFor="cantidad-preguntas">Número de preguntas (5-20):</label>
@@ -304,9 +436,15 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
   }
 
   if (juegoTerminado) {
-    const respuestasCorrectas = respuestasUsuario.filter(r => r.correcta).length + 
+    const respuestasCorrectas = resultadoFinal?.respuestasCorrectas || 
+      respuestasUsuario.filter(r => r.correcta).length + 
       (respuestaSeleccionada === preguntas[preguntaActual].respuestaCorrecta ? 1 : 0);
-    const porcentaje = Math.round((respuestasCorrectas / preguntas.length) * 100);
+    
+    const porcentaje = resultadoFinal?.porcentajeAcierto || 
+      Math.round((respuestasCorrectas / preguntas.length) * 100);
+    
+    const puntosFinales = resultadoFinal?.puntosFinales || 
+      puntuacion + (respuestaSeleccionada === preguntas[preguntaActual].respuestaCorrecta ? preguntas[preguntaActual].puntos : 0);
 
     return (
       <div className="trivia-container">
@@ -333,6 +471,27 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
             ¡Trivia Completada!
           </h2>
           
+          {/* Mensaje de torneo */}
+          {torneoActivo && resultadoFinal?.resultadoTorneo && (
+            <div className={`torneo-resultado-mensaje ${
+              resultadoFinal.resultadoTorneo.success ? 'success' : 'error'
+            }`}>
+              {resultadoFinal.resultadoTorneo.success ? (
+                <>
+                  <FaTrophy style={{ marginRight: '8px', color: '#FFD700' }} />
+                  <strong>Resultado registrado en el torneo "{torneoActivo.nombre}"</strong>
+                  <p>+{puntosFinales} puntos agregados a tu puntuación del torneo</p>
+                </>
+              ) : (
+                <>
+                  <MdInfo style={{ marginRight: '8px', color: '#ff9800' }} />
+                  <strong>No se pudo registrar en el torneo:</strong>
+                  <p>{resultadoFinal.resultadoTorneo.message}</p>
+                </>
+              )}
+            </div>
+          )}
+          
           <div className="resultado-stats">
             <div className="stat-grande">
               <span className="stat-valor">{respuestasCorrectas}/{preguntas.length}</span>
@@ -345,9 +504,16 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
             </div>
             
             <div className="stat-grande">
-              <span className="stat-valor">+{puntuacion}</span>
+              <span className="stat-valor">+{puntosFinales}</span>
               <span className="stat-label">Puntos Ganados</span>
             </div>
+            
+            {resultadoFinal?.tiempoPromedio && (
+              <div className="stat-grande">
+                <span className="stat-valor">{resultadoFinal.tiempoPromedio}s</span>
+                <span className="stat-label">Tiempo promedio</span>
+              </div>
+            )}
           </div>
 
           <div className="mensaje-resultado">
@@ -410,6 +576,12 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
         <div className="progreso-info">
           <span>Pregunta {preguntaActual + 1} de {preguntas.length}</span>
           <span>Puntuación: {puntuacion}</span>
+          {torneoActivo && (
+            <span className="torneo-puntuacion">
+              <FaTrophy style={{ marginRight: '5px', color: '#FFD700' }} />
+              Torneo: {torneoActivo.participantes?.find(p => p.usuarioId === usuario?.id)?.puntuacion || 0} pts
+            </span>
+          )}
         </div>
         <div className="progreso-bar">
           <div className="progreso-fill" style={{ width: `${progreso}%` }}></div>
@@ -429,6 +601,12 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
           <span className="badge puntos">
             {pregunta.puntos || 10} pts
           </span>
+          {torneoActivo && (
+            <span className="badge torneo">
+              <FaTrophy style={{ marginRight: '3px' }} />
+              En Torneo
+            </span>
+          )}
         </div>
 
         <h3 className="pregunta-texto">{pregunta.pregunta}</h3>
@@ -469,7 +647,7 @@ const Trivia = ({ usuario, onTriviaComplete }) => {
               'Siguiente →'
             ) : (
               <>
-                Finalizar
+                {registrandoEnTorneo ? 'Registrando...' : 'Finalizar'}
                 <FaFlag style={{ marginLeft: '8px' }} />
               </>
             )}

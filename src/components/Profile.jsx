@@ -14,20 +14,35 @@ import {
   FaClock,
   FaChartLine,
   FaMedal,
-  FaScroll
+  FaScroll,
+  FaCrown,
+  FaUsers,
+  FaAward,
+  FaRegClock,
+  FaCalendarAlt,
+  FaChevronRight,
+  FaCaretUp,
+  FaCaretDown
 } from 'react-icons/fa';
 import {
   MdTrendingUp,
-  MdBarChart
+  MdBarChart,
+  MdEmojiEvents,
+  MdLeaderboard,
+  MdTimer
 } from 'react-icons/md';
 
 const Profile = ({ usuario, onUpdate }) => {
   const [profile, setProfile] = useState(null);
   const [ranking, setRanking] = useState([]);
   const [historial, setHistorial] = useState([]);
+  const [torneoActivo, setTorneoActivo] = useState(null);
+  const [torneoStats, setTorneoStats] = useState(null);
+  const [misTorneos, setMisTorneos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingTorneos, setLoadingTorneos] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({ nombre: '', avatar: '' });
-  const [loading, setLoading] = useState(true);
   const [vistaActual, setVistaActual] = useState('estadisticas');
   const [showIntro, setShowIntro] = useState(true);
   const [avatarGradient, setAvatarGradient] = useState('');
@@ -68,11 +83,140 @@ const Profile = ({ usuario, onUpdate }) => {
         nombre: profileData.nombre,
         avatar: profileData.avatar || ''
       });
+
+      // Cargar datos de torneos
+      if (usuario) {
+        await cargarDatosTorneos();
+      }
     } catch (error) {
       console.error('Error al cargar perfil:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const cargarDatosTorneos = async () => {
+    try {
+      setLoadingTorneos(true);
+      
+      // Cargar torneo activo
+      const torneosActivos = await triviaAPI.getTorneos({ estado: 'activo' });
+      if (torneosActivos.length > 0 && usuario) {
+        const torneoUsuario = torneosActivos.find(t => 
+          t.participantes && t.participantes.some(p => p.usuarioId === usuario.id)
+        );
+        
+        if (torneoUsuario) {
+          setTorneoActivo(torneoUsuario);
+        }
+      }
+      
+      // Cargar historial de torneos del usuario
+      if (usuario) {
+        const historialTorneos = await triviaAPI.getMisTorneos(usuario.id);
+        setMisTorneos(historialTorneos || []);
+      }
+      
+      // Calcular estadísticas de torneos
+      calcularEstadisticasTorneos();
+      
+    } catch (error) {
+      console.error('Error al cargar datos de torneos:', error);
+    } finally {
+      setLoadingTorneos(false);
+    }
+  };
+
+  const calcularEstadisticasTorneos = () => {
+    if (!misTorneos || misTorneos.length === 0) {
+      setTorneoStats({
+        totalTorneos: 0,
+        torneosGanados: 0,
+        mejorPosicion: null,
+        promedioPosicion: null,
+        puntosTotalesTorneos: 0,
+        podios: 0
+      });
+      return;
+    }
+
+    const stats = {
+      totalTorneos: misTorneos.length,
+      torneosGanados: misTorneos.filter(t => t.posicion === 1).length,
+      mejorPosicion: Math.min(...misTorneos.map(t => t.posicion || 999)),
+      promedioPosicion: Math.round(
+        misTorneos.reduce((sum, t) => sum + (t.posicion || 999), 0) / misTorneos.length
+      ),
+      puntosTotalesTorneos: misTorneos.reduce((sum, t) => sum + (t.puntuacion || 0), 0),
+      podios: misTorneos.filter(t => t.posicion && t.posicion <= 3).length
+    };
+
+    setTorneoStats(stats);
+  };
+
+  const formatearFecha = (fecha) => {
+    return new Date(fecha).toLocaleDateString('es-CO', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const formatearFechaCorta = (fecha) => {
+    return new Date(fecha).toLocaleDateString('es-CO', {
+      day: 'numeric',
+      month: 'short'
+    });
+  };
+
+  const calcularTiempoRestante = (fechaFin) => {
+    if (!fechaFin) return 'Sin fecha';
+    
+    const fin = new Date(fechaFin);
+    const ahora = new Date();
+    const diferencia = fin - ahora;
+    
+    if (diferencia <= 0) return 'Finalizado';
+    
+    const horas = Math.floor(diferencia / (1000 * 60 * 60));
+    const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (horas > 24) {
+      const dias = Math.floor(horas / 24);
+      return `${dias}d`;
+    }
+    
+    return `${horas}h ${minutos}m`;
+  };
+
+  const getMedallaIcono = (tipo) => {
+    const iconos = {
+      nivel: <FaStar style={{ color: '#FFD700' }} />,
+      perfeccion: <FaCheckCircle style={{ color: '#10B981' }} />,
+      experto: <FaTrophy style={{ color: '#F59E0B' }} />,
+      perseverante: <FaFire style={{ color: '#EF4444' }} />,
+      maestro: <FaMedal style={{ color: '#8B5CF6' }} />,
+      racha: <FaFire style={{ color: '#F97316' }} />,
+      torneo: <FaCrown style={{ color: '#FFD700' }} />,
+      podio: <FaAward style={{ color: '#C0C0C0' }} />
+    };
+    return iconos[tipo.split('_')[0]] || <FaMedal style={{ color: '#6B7280' }} />;
+  };
+
+  const getColorPorcentaje = (porcentaje) => {
+    if (porcentaje >= 90) return '#10b981';
+    if (porcentaje >= 70) return '#f59e0b';
+    return '#ef4444';
+  };
+
+  const obtenerIniciales = (nombre) => {
+    if (!nombre) return 'U';
+    const partes = nombre.trim().split(' ');
+    if (partes.length >= 2) {
+      return (partes[0][0] + partes[1][0]).toUpperCase();
+    }
+    return nombre[0].toUpperCase();
   };
 
   const handleUpdate = async (e) => {
@@ -134,42 +278,6 @@ const Profile = ({ usuario, onUpdate }) => {
   const progresoPuntos = profile.puntos % 1000;
   const totalParaNivel = 1000;
   const porcentajeProgreso = (progresoPuntos / totalParaNivel) * 100;
-
-  const formatearFecha = (fecha) => {
-    return new Date(fecha).toLocaleDateString('es-CO', {
-      day: 'numeric',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const getMedallaIcono = (tipo) => {
-    const iconos = {
-      nivel: <FaStar style={{ color: '#FFD700' }} />,
-      perfeccion: <FaCheckCircle style={{ color: '#10B981' }} />,
-      experto: <FaTrophy style={{ color: '#F59E0B' }} />,
-      perseverante: <FaFire style={{ color: '#EF4444' }} />,
-      maestro: <FaMedal style={{ color: '#8B5CF6' }} />,
-      racha: <FaFire style={{ color: '#F97316' }} />
-    };
-    return iconos[tipo.split('_')[0]] || <FaMedal style={{ color: '#6B7280' }} />;
-  };
-
-  const getColorPorcentaje = (porcentaje) => {
-    if (porcentaje >= 90) return '#10b981';
-    if (porcentaje >= 70) return '#f59e0b';
-    return '#ef4444';
-  };
-
-  const obtenerIniciales = (nombre) => {
-    if (!nombre) return 'U';
-    const partes = nombre.trim().split(' ');
-    if (partes.length >= 2) {
-      return (partes[0][0] + partes[1][0]).toUpperCase();
-    }
-    return nombre[0].toUpperCase();
-  };
 
   return (
     <div className="profile-compact">
@@ -268,6 +376,51 @@ const Profile = ({ usuario, onUpdate }) => {
             </div>
           </div>
 
+          {/* Sección compacta de torneo activo */}
+          {torneoActivo && (
+            <div className="torneo-activo-compact">
+              <div className="torneo-activo-header-compact">
+                <h4>
+                  <FaCrown style={{ marginRight: '8px', color: '#FFD700' }} />
+                  Torneo Activo
+                </h4>
+                <span className="torneo-tiempo-compact">
+                  <FaRegClock style={{ marginRight: '4px', fontSize: '0.8em' }} />
+                  {calcularTiempoRestante(torneoActivo.fechaFin)}
+                </span>
+              </div>
+              
+              <div className="torneo-info-compact">
+                <div className="torneo-nombre-compact">
+                  {torneoActivo.nombre}
+                </div>
+                
+                <div className="torneo-stats-compact">
+                  <div className="torneo-stat-compact">
+                    <FaUsers style={{ fontSize: '0.8em', color: '#667eea' }} />
+                    <span>{torneoActivo.participantesActuales || 0}</span>
+                  </div>
+                  
+                  <div className="torneo-stat-compact">
+                    <MdTimer style={{ fontSize: '0.8em', color: '#f59e0b' }} />
+                    <span>{torneoActivo.tipo === 'tiempo' ? 'Contra reloj' : 'Puntos'}</span>
+                  </div>
+                </div>
+                
+                {torneoActivo.descripcion && (
+                  <div className="torneo-desc-compact">
+                    {torneoActivo.descripcion.substring(0, 60)}...
+                  </div>
+                )}
+                
+                <button className="btn-ver-torneo-compact">
+                  <FaChevronRight style={{ fontSize: '0.9em' }} />
+                  Ver torneo
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="tabs-compact">
             <button
               className={`tab-btn ${vistaActual === 'estadisticas' ? 'active' : ''}`}
@@ -275,6 +428,16 @@ const Profile = ({ usuario, onUpdate }) => {
             >
               <MdBarChart className="tab-icon" />
               <span className="tab-text">Estadísticas</span>
+            </button>
+            <button
+              className={`tab-btn ${vistaActual === 'torneos' ? 'active' : ''}`}
+              onClick={() => setVistaActual('torneos')}
+            >
+              <MdEmojiEvents className="tab-icon" />
+              <span className="tab-text">Torneos</span>
+              {torneoStats && torneoStats.totalTorneos > 0 && (
+                <span className="tab-badge">{torneoStats.totalTorneos}</span>
+              )}
             </button>
             <button
               className={`tab-btn ${vistaActual === 'medallas' ? 'active' : ''}`}
@@ -368,6 +531,123 @@ const Profile = ({ usuario, onUpdate }) => {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {vistaActual === 'torneos' && (
+              <div className="torneos-compact">
+                {loadingTorneos ? (
+                  <div className="loading-torneos">
+                    <FaTrophy className="spinning" style={{ fontSize: '2em', color: '#667eea' }} />
+                    <p>Cargando torneos...</p>
+                  </div>
+                ) : (
+                  <>
+                    {torneoStats && torneoStats.totalTorneos > 0 ? (
+                      <>
+                        {/* Estadísticas de Torneos */}
+                        <div className="torneo-stats-grid-compact">
+                          <div className="torneo-stat-card destacado">
+                            <div className="torneo-stat-content">
+                              <FaTrophy className="torneo-stat-icon" style={{ color: '#FFD700' }} />
+                              <div>
+                                <div className="torneo-stat-value">{torneoStats.totalTorneos}</div>
+                                <div className="torneo-stat-label">Torneos</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="torneo-stat-card">
+                            <div className="torneo-stat-content">
+                              <FaCrown className="torneo-stat-icon" style={{ color: '#FFD700' }} />
+                              <div>
+                                <div className="torneo-stat-value">{torneoStats.torneosGanados}</div>
+                                <div className="torneo-stat-label">Victorias</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="torneo-stat-card">
+                            <div className="torneo-stat-content">
+                              <FaMedal className="torneo-stat-icon" style={{ color: '#C0C0C0' }} />
+                              <div>
+                                <div className="torneo-stat-value">{torneoStats.podios}</div>
+                                <div className="torneo-stat-label">Podios</div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="torneo-stat-card">
+                            <div className="torneo-stat-content">
+                              <FaAward className="torneo-stat-icon" style={{ color: '#f59e0b' }} />
+                              <div>
+                                <div className="torneo-stat-value">{torneoStats.promedioPosicion}°</div>
+                                <div className="torneo-stat-label">Promedio</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Historial reciente de torneos */}
+                        <div className="historial-torneos-compact">
+                          <h5 className="historial-torneos-title">
+                            <FaCalendarAlt style={{ marginRight: '6px' }} />
+                            Últimos Torneos
+                          </h5>
+                          
+                          <div className="historial-torneos-list">
+                            {misTorneos.slice(0, 3).map((torneo, index) => (
+                              <div key={index} className="historial-torneo-item">
+                                <div className="torneo-item-header">
+                                  <span className="torneo-item-nombre">
+                                    {torneo.torneoNombre || `Torneo ${index + 1}`}
+                                  </span>
+                                  <span className={`torneo-item-posicion posicion-${torneo.posicion}`}>
+                                    {torneo.posicion === 1 ? (
+                                      <><FaCrown style={{ marginRight: '2px', fontSize: '0.8em' }} /> 1°</>
+                                    ) : torneo.posicion === 2 ? (
+                                      <><FaMedal style={{ marginRight: '2px', fontSize: '0.8em', color: '#C0C0C0' }} /> 2°</>
+                                    ) : torneo.posicion === 3 ? (
+                                      <><FaMedal style={{ marginRight: '2px', fontSize: '0.8em', color: '#CD7F32' }} /> 3°</>
+                                    ) : (
+                                      `#${torneo.posicion}`
+                                    )}
+                                  </span>
+                                </div>
+                                
+                                <div className="torneo-item-info">
+                                  <span className="torneo-item-fecha">
+                                    {formatearFechaCorta(torneo.fecha)}
+                                  </span>
+                                  <span className="torneo-item-puntos">
+                                    {torneo.puntuacion || 0} pts
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {misTorneos.length > 3 && (
+                            <button className="btn-ver-mas-torneos">
+                              Ver todos los torneos ({misTorneos.length})
+                              <FaChevronRight style={{ marginLeft: '4px', fontSize: '0.8em' }} />
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="empty-state-torneos">
+                        <MdEmojiEvents style={{ fontSize: '3em', color: '#cbd5e1', marginBottom: '10px' }} />
+                        <p className="empty-text">Aún no has participado en torneos</p>
+                        <p className="empty-subtext">¡Únete a un torneo y compite!</p>
+                        <button className="btn-unirse-torneo">
+                          <FaTrophy style={{ marginRight: '6px' }} />
+                          Ver Torneos Disponibles
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             )}
 
@@ -472,13 +752,9 @@ const Profile = ({ usuario, onUpdate }) => {
                   </div>
 
                   <div className="rank-user">
-                    <div
-                      className="avatar-circle-gradient"
-                      style={{ background: avatarGradient }}
-                      onClick={() => setAvatarGradient(generarGradienteAleatorio())}
-                    >
+                    <div className="avatar-circle-gradient" style={{ background: avatarGradient }}>
                       <span className="avatar-initials">
-                        {obtenerIniciales(profile.nombre)}
+                        {obtenerIniciales(user.nombre)}
                       </span>
                     </div>
                     <div className="rank-info">
@@ -496,26 +772,67 @@ const Profile = ({ usuario, onUpdate }) => {
             </div>
           </div>
 
-          <div className="summary-card">
-            <h3 className="summary-title">
-              <FaChartLine style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-              Resumen Semanal
-            </h3>
-            <div className="summary-stats">
-              <div className="summary-stat">
-                <div className="summary-stat-value">+245</div>
-                <div className="summary-stat-label">Puntos ganados</div>
+          {/* Tarjeta de logros en torneos */}
+          {torneoStats && torneoStats.torneosGanados > 0 && (
+            <div className="torneo-logros-card">
+              <div className="torneo-logros-header">
+                <h4 className="torneo-logros-title">
+                  <FaCrown style={{ marginRight: '8px', color: '#FFD700' }} />
+                  Logros en Torneos
+                </h4>
               </div>
-              <div className="summary-stat">
-                <div className="summary-stat-value">8</div>
-                <div className="summary-stat-label">Trivias jugadas</div>
-              </div>
-              <div className="summary-stat">
-                <div className="summary-stat-value" style={{ color: '#10b981' }}>85%</div>
-                <div className="summary-stat-label">Promedio acierto</div>
+              
+              <div className="torneo-logros-list">
+                {torneoStats.mejorPosicion === 1 && (
+                  <div className="torneo-logro-item destacado">
+                    <div className="logro-icon">
+                      <FaCrown style={{ color: '#FFD700', fontSize: '1.2em' }} />
+                    </div>
+                    <div className="logro-info">
+                      <div className="logro-title">Campeón de Torneo</div>
+                      <div className="logro-subtitle">{torneoStats.torneosGanados} victoria{torneoStats.torneosGanados > 1 ? 's' : ''}</div>
+                    </div>
+                  </div>
+                )}
+                
+                {torneoStats.podios > 0 && (
+                  <div className="torneo-logro-item">
+                    <div className="logro-icon">
+                      <FaAward style={{ color: '#C0C0C0', fontSize: '1.2em' }} />
+                    </div>
+                    <div className="logro-info">
+                      <div className="logro-title">Maestro del Podio</div>
+                      <div className="logro-subtitle">{torneoStats.podios} podio{torneoStats.podios > 1 ? 's' : ''}</div>
+                    </div>
+                  </div>
+                )}
+                
+                {torneoStats.promedioPosicion <= 5 && (
+                  <div className="torneo-logro-item">
+                    <div className="logro-icon">
+                      <MdTrendingUp style={{ color: '#10b981', fontSize: '1.2em' }} />
+                    </div>
+                    <div className="logro-info">
+                      <div className="logro-title">Consistencia</div>
+                      <div className="logro-subtitle">Promedio: {torneoStats.promedioPosicion}°</div>
+                    </div>
+                  </div>
+                )}
+                
+                {torneoStats.totalTorneos >= 5 && (
+                  <div className="torneo-logro-item">
+                    <div className="logro-icon">
+                      <FaUsers style={{ color: '#667eea', fontSize: '1.2em' }} />
+                    </div>
+                    <div className="logro-info">
+                      <div className="logro-title">Competidor Activo</div>
+                      <div className="logro-subtitle">{torneoStats.totalTorneos} torneo{torneoStats.totalTorneos > 1 ? 's' : ''}</div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

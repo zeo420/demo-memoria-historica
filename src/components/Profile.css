@@ -886,3 +886,436 @@
   height: 70px !important;
   font-size: 30px !important;
 }
+
+/* Estilos para la sección compacta de Torneos en el Perfil */
+
+/* Torneo activo compacto */
+.torneo-activo-compact {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px 0;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.torneo-activo-header-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.torneo-activo-header-compact h4 {
+  margin: 0;
+  font-size: 1.1em;
+  color: white;
+  display: flex;
+  align-items: center;
+}
+
+.torneo-tiempo-compact {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 0.8em;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.torneo-info-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.torneo-nombre-compact {
+  font-weight: 600;
+  font-size: 1em;
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.torneo-stats-compact {
+  display: flex;
+  gap: 15px;
+}
+
+.torneo-stat-compact {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85em;
+  opacity: 0.9;
+}
+
+.torneo-desc-compact {
+  font-size: 0.85em;
+  opacity: 0.8;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.btn-ver-torneo-compact {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 5px;
+  width: fit-content;
+}
+
+.btn-ver-torneo-compact:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Tab de torneos */
+.torneos-compact {
+  padding: 15px 0;
+}
+
+.torneo-stats-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.torneo-stat-card {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.torneo-stat-card.destacado {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.torneo-stat-card.destacado .torneo-stat-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.torneo-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.torneo-stat-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.torneo-stat-icon {
+  font-size: 1.5em;
+}
+
+.torneo-stat-value {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.torneo-stat-label {
+  font-size: 0.85em;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Historial de torneos compacto */
+.historial-torneos-compact {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+}
+
+.historial-torneos-title {
+  margin: 0 0 15px 0;
+  font-size: 1.1em;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+}
+
+.historial-torneos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.historial-torneo-item {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 12px;
+  border-left: 3px solid #667eea;
+  transition: all 0.2s ease;
+}
+
+.historial-torneo-item:hover {
+  background: #f1f5f9;
+  transform: translateX(2px);
+}
+
+.torneo-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.torneo-item-nombre {
+  font-weight: 600;
+  font-size: 0.95em;
+  color: #1e293b;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 10px;
+}
+
+.torneo-item-posicion {
+  font-weight: bold;
+  font-size: 0.85em;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.torneo-item-posicion.posicion-1 {
+  color: #FFD700;
+}
+
+.torneo-item-posicion.posicion-2 {
+  color: #C0C0C0;
+}
+
+.torneo-item-posicion.posicion-3 {
+  color: #CD7F32;
+}
+
+.torneo-item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85em;
+}
+
+.torneo-item-fecha {
+  color: #64748b;
+}
+
+.torneo-item-puntos {
+  color: #10b981;
+  font-weight: bold;
+}
+
+.btn-ver-mas-torneos {
+  width: 100%;
+  background: none;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.btn-ver-mas-torneos:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #475569;
+}
+
+/* Estado vacío para torneos */
+.empty-state-torneos {
+  text-align: center;
+  padding: 30px 20px;
+  color: #64748b;
+}
+
+.empty-state-torneos .empty-text {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #475569;
+}
+
+.empty-state-torneos .empty-subtext {
+  font-size: 0.9em;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.btn-unirse-torneo {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-unirse-torneo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Logros en torneos */
+.torneo-logros-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.torneo-logros-header {
+  margin-bottom: 15px;
+}
+
+.torneo-logros-title {
+  margin: 0;
+  font-size: 1.2em;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+}
+
+.torneo-logros-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.torneo-logro-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.torneo-logro-item:hover {
+  background: #f1f5f9;
+  transform: translateX(2px);
+}
+
+.torneo-logro-item.destacado {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.logro-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logro-info {
+  flex: 1;
+}
+
+.logro-title {
+  font-weight: 600;
+  font-size: 0.95em;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.logro-subtitle {
+  font-size: 0.85em;
+  color: #64748b;
+}
+
+/* Loading para torneos */
+.loading-torneos {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.loading-torneos .spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .torneo-stats-grid-compact {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .torneo-stat-card {
+    padding: 12px;
+  }
+  
+  .torneo-stat-value {
+    font-size: 1.2em;
+  }
+  
+  .torneo-logros-card {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .torneo-activo-compact {
+    padding: 12px;
+  }
+  
+  .torneo-stats-compact {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .torneo-stats-grid-compact {
+    grid-template-columns: 1fr;
+  }
+}
